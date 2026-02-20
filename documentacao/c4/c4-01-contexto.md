@@ -7,6 +7,8 @@ Este diagrama mostra o sistema **Diário de Estudos** no contexto do usuário e 
 - Identifica **pessoas** (usuários/atores) e **sistemas externos** (dependências/integrações) com os quais ele se relaciona.
 - É o nível mais alto de abstração. Serve para alinhamento com stakeholders e para explicitar fronteiras.
 
+[C4 Model - Contexto](https://c4model.com/diagrams/system-context)
+
 ### Para quem é útil
 
 - Pessoas de produto (PO), clientes, professores/alunos e time técnico.

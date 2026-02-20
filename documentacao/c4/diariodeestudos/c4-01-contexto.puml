@@ -1,0 +1,35 @@
+@startuml C4_Context_DiarioDeEstudos
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Diário de Estudos — Nível 1: Contexto do Sistema
+
+' ─── Pessoas ───────────────────────────────────────────────────────────────
+
+Person(estudante, "Estudante", "Usa o app para registrar sessões de\nestudo por matéria ou tópico e\nacompanhar histórico e indicadores.")
+
+Person(concurseiro, "Concurseiro", "Controla várias matérias e tópicos,\nmede desempenho por questões e\nidentifica pontos de melhoria.")
+
+Person(profCertificacao, "Profissional em Certificação", "Estuda em ciclos e acompanha\nevoluções por relatórios de\ndesempenho.")
+
+' ─── Sistema principal ──────────────────────────────────────────────────────
+
+System(diario, "Diário de Estudos", "Aplicativo mobile (Expo / React Native + TypeScript)\nque permite cadastrar matérias e tópicos,\nregistrar sessões de estudo com métricas\n(duração, questões feitas e corretas)\ne consultar histórico e resumos de desempenho.")
+
+' ─── Sistemas externos ──────────────────────────────────────────────────────
+
+System_Ext(firebaseAuth, "Firebase Authentication", "Serviço do Google Firebase responsável\npelo cadastro, login e gerenciamento\nde identidade dos usuários.")
+
+System_Ext(firestore, "Cloud Firestore", "Banco de dados NoSQL em nuvem (Google Firebase)\nque armazena matérias, tópicos e\nregistros de estudo do usuário.")
+
+' ─── Relacionamentos ────────────────────────────────────────────────────────
+
+Rel(estudante,         diario, "Cadastra matérias/tópicos,\nregistra estudos e consulta indicadores", "UI Mobile")
+Rel(concurseiro,       diario, "Cadastra matérias/tópicos,\nregistra estudos e consulta indicadores", "UI Mobile")
+Rel(profCertificacao,  diario, "Cadastra matérias/tópicos,\nregistra estudos e consulta indicadores", "UI Mobile")
+
+Rel(diario, firebaseAuth, "Autentica o usuário e obtém\nsua identidade (uid)", "Firebase Auth SDK / HTTPS")
+Rel(diario, firestore,    "Lê e escreve matérias, tópicos\ne registros de estudo do usuário", "Firestore SDK / HTTPS")
+
+@enduml

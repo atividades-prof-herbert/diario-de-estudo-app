@@ -4,6 +4,8 @@ Este diretório contém os diagramas no padrão **C4 Model**, descritos em **Pla
 
 O C4 Model descreve a arquitetura de software em níveis de zoom, do mais alto nível (contexto) até o detalhamento interno (componentes).  
 
+[C4 Model - Diagramas](https://c4model.com/diagrams)
+
 
 ## Arquivos
 
@@ -15,6 +17,9 @@ O C4 Model descreve a arquitetura de software em níveis de zoom, do mais alto n
 
 
 ## Referência
-https://c4model.com/
+[C4 Model 1](https://c4model.com/)
+[C4 Model2](https://c4model.com/introduction)
+[InfoQ](https://www.infoq.com/br/articles/C4-architecture-model/)
+[Video 1](https://www.youtube.com/watch?v=-145nWCNnDg)
 
 
