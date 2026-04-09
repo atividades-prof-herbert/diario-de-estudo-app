@@ -1,16 +1,18 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+
+import Inicio from './src/telas/Inicio';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
+    <View style={estilos.container}>
+      <Inicio />
       <StatusBar style="auto" />
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const estilos = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',

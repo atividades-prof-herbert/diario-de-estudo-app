@@ -32,6 +32,7 @@ O projeto tem como objetivo permitir que o usuário:
 
 ## Aulas
 
+
 ### Aula 01 - Configuração do ambiente
 A branch `aula-01-setup` contém a configuração inicial do ambiente e o projeto base criado com Expo usando o template `blank-typescript`.
 
@@ -48,4 +49,34 @@ Material da aula:
 - [aulas/1_setup_ambiente.md](aulas/1_setup_ambiente.md)
 
 
+### Aula 02 - Componentes
+A branch `aula-02-componentes`...
 
+Nesta etapa foram trabalhados:
+
+
+Material da aula:
+
+- [aulas/1_setup_ambiente.md](aulas/1_setup_ambiente.md)
+
+
+### Aula 03 - Componentes: Props e Tipagem
+A branch `aula-03-componentes-props` apresenta o conceito de props como mecanismo de passagem de dados entre componentes, com tipagem via TypeScript.
+
+Nesta etapa foram trabalhados:
+
+- o problema dos componentes estáticos (dados hardcoded)
+- o conceito de props como parâmetros de componentes
+- declaração de tipos com `type Props`
+- props obrigatórias e opcionais (`?`)
+- valores padrão na desestruturação
+- reutilização de componentes com dados diferentes
+
+Componentes criados/refatorados:
+
+- `CartaoMateria` — componente novo com props `nome`, `descricao` e `corDestaque?`
+- `Login` — refatorado para receber `titulo` e `textoBotao?`
+
+Material da aula:
+
+- [aulas/3_componentes_props.md](aulas/3_componentes_props.md)
