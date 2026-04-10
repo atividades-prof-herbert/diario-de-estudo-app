@@ -1,6 +1,7 @@
 import { ScrollView, StyleSheet, Text } from 'react-native';
 
 import CartaoMateria from '../componentes/CartaoMateria';
+import CartaoTopico from '../componentes/CartaoTopico';
 import Login from '../componentes/Login';
 
 export default function Inicio() {
@@ -21,6 +22,23 @@ export default function Inicio() {
         nome="Programação"
         descricao="React Native, TypeScript e lógica de programação"
         corDestaque="#2ECC71"
+      />
+
+      <Text style={estilos.secao}>Tópicos</Text>
+
+      <CartaoTopico
+        nome="Álgebra Linear"
+        materiaVinculada="Matemática"
+      />
+      <CartaoTopico
+        nome="Interpretação de Texto"
+        materiaVinculada="Português"
+        concluido
+      />
+      <CartaoTopico
+        nome="Componentes e Props"
+        materiaVinculada="Programação"
+        concluido
       />
 
       <Login titulo="Acesse sua conta" textoBotao="Entrar no diário" />

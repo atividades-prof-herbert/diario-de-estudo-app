@@ -1,15 +1,13 @@
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
-// type Props = {
-//   titulo: string;
-//   textoBotao?: string;
-// };
-
-type LoginProps ={
+// onPress é uma prop do tipo função: não recebe argumentos e não retorna nada
+type LoginPressProps = {
   titulo: string;
   textoBotao?: string;
-}
-export default function Login({ titulo, textoBotao = 'Entrar' }: LoginProps) {
+  onPress: () => void;
+};
+
+export default function LoginPress({ titulo, textoBotao = 'Entrar', onPress }: LoginPressProps) {
   return (
     <View style={estilos.container}>
       <Text style={estilos.titulo}>{titulo}</Text>
@@ -29,7 +27,8 @@ export default function Login({ titulo, textoBotao = 'Entrar' }: LoginProps) {
         secureTextEntry
       />
 
-      <TouchableOpacity style={estilos.botao}>
+      {/* onPress é passado para o TouchableOpacity, que o chama ao toque */}
+      <TouchableOpacity style={estilos.botao} onPress={onPress}>
         <Text style={estilos.textoBotao}>{textoBotao}</Text>
       </TouchableOpacity>
     </View>
