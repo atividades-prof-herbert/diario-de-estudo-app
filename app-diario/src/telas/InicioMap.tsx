@@ -20,12 +20,12 @@ export default function InicioMap() {
     <ScrollView contentContainerStyle={estilos.container}>
       <Text style={estilos.secao}>Matérias cadastradas</Text>
 
-      {materias.map((materia) => (
+      {materias.map((itemMateria) => (
         <CartaoMateria
-          key={materia.nome}
-          nome={materia.nome}
-          descricao={materia.descricao}
-          corDestaque={materia.corDestaque}
+          key={itemMateria.nome}
+          nome={itemMateria.nome}
+          descricao={itemMateria.descricao}
+          corDestaque={itemMateria.corDestaque}
         />
       ))}
     </ScrollView>

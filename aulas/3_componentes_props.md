@@ -554,11 +554,4 @@ Requisitos:
 3. Se `concluido` for `true`, exibir um indicador visual (ex.: texto "Concluído" em verde).
 4. Usar o componente ao menos 3 vezes na tela `Inicio.tsx` com variações.
 
----
-
-## Exercício Complementar
-
-Com base nos novos conceitos desta aula:
-
-1. Em `InicioMap.tsx`, adicione uma quarta matéria ao array `materias` e verifique que o novo card aparece sem tocar no JSX.
 
