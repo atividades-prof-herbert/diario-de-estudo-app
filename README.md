@@ -80,3 +80,19 @@ Componentes criados/refatorados:
 Material da aula:
 
 - [aulas/3_componentes_props.md](aulas/3_componentes_props.md)
+
+
+### Aula 04 - Renderização Condicional, Regras do JSX e Estilos Dinâmicos
+A branch `aula-04-componentes-props` refina o que foi visto na aula 03, focando em padrões do React e melhor uso do JSX.
+
+Nesta etapa foram trabalhados:
+
+- renderização condicional com `&&` e ternário (`? :`)
+- expressões vs declarações dentro de `{}`
+- igualdade estrita (`===`) vs frouxa (`==`)
+- regras do JSX: elemento raiz único, Fragment (`<>...</>`), nomes capitalizados
+- estilos dinâmicos via prop `style` com array de objetos
+
+Material da aula:
+
+- [aulas/4_componentes_props.md](aulas/4_componentes_props.md)
