@@ -1,12 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
 
-import Inicio from './src/telas/Inicio';
+import TelaTopicos from './src/telas/TelaTopicos';
 
 export default function App() {
   return (
     <View style={estilos.container}>
-      <Inicio />
+      <TelaTopicos />
       <StatusBar style="auto" />
     </View>
   );

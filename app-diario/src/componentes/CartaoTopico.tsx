@@ -7,16 +7,11 @@ type Props = {
 };
 
 export default function CartaoTopico({ nome, materiaVinculada, concluido = false }: Props) {
-  let badgeConcluido = null;
-  if (concluido) {
-    badgeConcluido = <Text style={estilos.badge}>Concluído</Text>;
-  }
-
   return (
     <View style={estilos.cartao}>
       <View style={estilos.cabecalho}>
         <Text style={estilos.nome}>{nome}</Text>
-        {badgeConcluido}
+        {concluido && <Text style={estilos.badge}>Concluído</Text>}
       </View>
       <Text style={estilos.materia}>{materiaVinculada}</Text>
     </View>

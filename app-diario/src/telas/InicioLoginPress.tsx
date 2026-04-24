@@ -1,5 +1,6 @@
 import { Alert, ScrollView, StyleSheet, Text } from 'react-native';
 
+import Cabecalho from '../componentes/Cabecalho';
 import LoginPress from '../componentes/LoginPress';
 
 export default function InicioLoginPress() {
@@ -13,6 +14,8 @@ export default function InicioLoginPress() {
 
   return (
     <ScrollView contentContainerStyle={estilos.container}>
+      <Cabecalho titulo="Acesso" />
+
       <Text style={estilos.secao}>Acesso ao diário</Text>
 
       {/* Mesmo componente, comportamentos diferentes via onPress */}
@@ -37,13 +40,14 @@ const estilos = StyleSheet.create({
   container: {
     flexGrow: 1,
     backgroundColor: '#fff',
+    paddingBottom: 40,
     paddingHorizontal: 24,
-    paddingVertical: 40,
   },
   secao: {
     fontSize: 16,
     fontWeight: '600',
     alignSelf: 'flex-start',
+    marginTop: 16,
     marginBottom: 8,
     color: '#333',
   },
