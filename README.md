@@ -96,3 +96,22 @@ Nesta etapa foram trabalhados:
 Material da aula:
 
 - [aulas/4_componentes_props.md](aulas/4_componentes_props.md)
+
+
+### Aula 05 - Navegação com Expo Router
+A branch `aula-05-rotas` introduz o Expo Router como sistema de navegação baseado em arquivos, substituindo o ponto de entrada manual do app.
+
+Nesta etapa foram trabalhados:
+
+- o conceito de rota em apps mobile (equivalente à URL no navegador)
+- Expo Router como roteador baseado em arquivos (nome do arquivo = rota)
+- configuração obrigatória: `"main": "expo-router/entry"` no `package.json` e `scheme` no `app.json`
+- estrutura de pastas: pasta `app/` com `_layout.tsx` e arquivos de rota
+- `_layout.tsx` com `Stack` para empilhamento de telas e botão "voltar" automático
+- navegação com `router.push` (empilha), `router.replace` (substitui sem histórico) e `router.back`
+
+
+
+Material da aula:
+
+- [aulas/5_rotas.md](aulas/5_rotas.md)
