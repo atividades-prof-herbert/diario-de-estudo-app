@@ -1,12 +1,12 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-type Props = {
+type CartaoMateriaProps = {
   nome: string;
   descricao: string;
   corDestaque?: string;
 };
 
-export default function CartaoMateria({ nome, descricao, corDestaque = '#4A90D9' }: Props) {
+export default function CartaoMateria({ nome, descricao, corDestaque = '#4A90D9' }: CartaoMateriaProps) {
   return (
     <View style={[estilos.cartao, { borderLeftColor: corDestaque }]}>
       <Text style={[estilos.nome, { color: corDestaque }]}>{nome}</Text>

@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet, Text } from 'react-native';
 
 import Cabecalho from '../componentes/Cabecalho';
 import CartaoTopico from '../componentes/CartaoTopico';
@@ -22,14 +22,20 @@ export default function TelaTopicos() {
     <ScrollView contentContainerStyle={estilos.container}>
       <Cabecalho titulo="Tópicos" subtitulo="Conteúdos por matéria" />
 
-      {topicos.map((topico) => (
-        <CartaoTopico
-          key={topico.nome}
-          nome={topico.nome}
-          materiaVinculada={topico.materiaVinculada}
-          concluido={topico.concluido}
-        />
-      ))}
+      {/* Ternário: precisamos exibir UMA coisa OU OUTRA (mensagem ou lista),
+          então o ternário deixa a intenção mais explícita do que um && duplo. */}
+      {topicos.length === 0 ? (
+        <Text style={estilos.vazio}>Nenhum tópico cadastrado.</Text>
+      ) : (
+        topicos.map((topico) => (
+          <CartaoTopico
+            key={topico.nome}
+            nome={topico.nome}
+            materiaVinculada={topico.materiaVinculada}
+            concluido={topico.concluido}
+          />
+        ))
+      )}
     </ScrollView>
   );
 }
@@ -40,5 +46,11 @@ const estilos = StyleSheet.create({
     backgroundColor: '#fff',
     paddingBottom: 40,
     paddingHorizontal: 20,
+  },
+  vazio: {
+    fontSize: 14,
+    color: '#777',
+    fontStyle: 'italic',
+    marginTop: 12,
   },
 });

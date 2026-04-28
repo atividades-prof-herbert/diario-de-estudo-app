@@ -1,7 +1,7 @@
 {
   "name": "app-diario",
   "version": "1.0.0",
-  "main": "index.ts",
+  "main": "expo-router/entry",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -10,10 +10,15 @@
   },
   "dependencies": {
     "expo": "~54.0.33",
+    "expo-constants": "^55.0.15",
+    "expo-linking": "^55.0.14",
+    "expo-router": "^55.0.13",
     "expo-status-bar": "~3.0.9",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-native": "0.81.5",
+    "react-native-safe-area-context": "^5.7.0",
+    "react-native-screens": "^4.24.0",
     "react-native-web": "~0.20.0"
   },
   "devDependencies": {

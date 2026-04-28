@@ -15,24 +15,22 @@ const materias: Materia[] = [
   { nome: 'Programação', descricao: 'React Native, TypeScript e lógica de programação', corDestaque: '#2ECC71' },
 ];
 
-export default function InicioMap() {
+export default function TelaInicio() {
   return (
     <ScrollView contentContainerStyle={estilos.container}>
       <Cabecalho titulo="Diário de Estudos" subtitulo="Suas matérias cadastradas" />
-
-      <Text style={estilos.secao}>Matérias cadastradas</Text>
 
       {/* Ternário: precisamos exibir UMA coisa OU OUTRA (mensagem ou lista),
           então o ternário deixa a intenção mais explícita do que um && duplo. */}
       {materias.length === 0 ? (
         <Text style={estilos.vazio}>Nenhuma matéria cadastrada.</Text>
       ) : (
-        materias.map((itemMateria) => (
+        materias.map((item) => (
           <CartaoMateria
-            key={itemMateria.nome}
-            nome={itemMateria.nome}
-            descricao={itemMateria.descricao}
-            corDestaque={itemMateria.corDestaque}
+            key={item.nome}
+            nome={item.nome}
+            descricao={item.descricao}
+            corDestaque={item.corDestaque}
           />
         ))
       )}
@@ -45,15 +43,6 @@ const estilos = StyleSheet.create({
     flexGrow: 1,
     backgroundColor: '#fff',
     paddingBottom: 40,
-  },
-  secao: {
-    fontSize: 16,
-    fontWeight: '600',
-    alignSelf: 'flex-start',
-    marginBottom: 4,
-    marginTop: 16,
-    marginHorizontal: 20,
-    color: '#333',
   },
   vazio: {
     fontSize: 14,

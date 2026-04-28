@@ -1,12 +1,12 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-type Props = {
+type CartaoTopicoProps = {
   nome: string;
   materiaVinculada: string;
   concluido?: boolean;
 };
 
-export default function CartaoTopico({ nome, materiaVinculada, concluido = false }: Props) {
+export default function CartaoTopico({ nome, materiaVinculada, concluido = false }: CartaoTopicoProps) {
   return (
     <View style={estilos.cartao}>
       <View style={estilos.cabecalho}>
