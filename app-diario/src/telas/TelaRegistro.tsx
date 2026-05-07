@@ -2,22 +2,13 @@ import { ScrollView, StyleSheet, Text } from 'react-native';
 
 import Cabecalho from '../componentes/Cabecalho';
 import CartaoRegistro from '../componentes/CartaoRegistro';
-
-type Registro = {
-  materia: string;
-  topico: string;
-  descricao?: string;
-  data: string;
-};
-
-const registros: Registro[] = [
-  { materia: 'Matemática', topico: 'Derivadas', descricao: 'Regra da cadeia e produto', data: '21/04/2025' },
-  { materia: 'Programação', topico: 'React Native', descricao: 'Componentes e props', data: '22/04/2025' },
-  { materia: 'Português', topico: 'Concordância verbal', data: '23/04/2025' },
-  { materia: 'Programação', topico: 'TypeScript', descricao: 'Tipos, interfaces e generics', data: '24/04/2025' },
-];
+import { buscarMateriaPorId } from '../services/MateriaService';
+import { listarRegistros } from '../services/RegistroService';
+import { buscarTopicoPorId } from '../services/TopicoService';
 
 export default function TelaRegistro() {
+  const registros = listarRegistros();
+
   return (
     <ScrollView contentContainerStyle={estilos.container}>
       <Cabecalho titulo="Diário de Estudos" subtitulo="Registros de sessões" />
@@ -29,9 +20,9 @@ export default function TelaRegistro() {
       ) : (
         registros.map((item) => (
           <CartaoRegistro
-            key={`${item.topico}-${item.data}`}
-            materia={item.materia}
-            topico={item.topico}
+            key={item.id}
+            materia={buscarMateriaPorId(item.materiaId)?.nome ?? 'Desconhecida'}
+            topico={buscarTopicoPorId(item.topicoId)?.nome ?? 'Desconhecido'}
             descricao={item.descricao}
             data={item.data}
           />

@@ -1,4 +1,5 @@
-import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
+import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
+import { mostrarAlerta } from '../utils/alerta';
 
 import Cabecalho from '../componentes/Cabecalho';
 
@@ -26,7 +27,7 @@ export default function TelaNovoRegistro() {
 
       <TouchableOpacity
         style={estilos.botao}
-        onPress={() => Alert.alert('Registro salvo com sucesso!')}
+        onPress={() => mostrarAlerta('Registro salvo com sucesso!')}
       >
         <Text style={estilos.botaoTexto}>Salvar registro</Text>
       </TouchableOpacity>

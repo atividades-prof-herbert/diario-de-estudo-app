@@ -2,22 +2,23 @@ import { ScrollView, StyleSheet, Text } from 'react-native';
 
 import Cabecalho from '../componentes/Cabecalho';
 import CartaoTopico from '../componentes/CartaoTopico';
-
-type Topico = {
-  nome: string;
-  materiaVinculada: string;
-  concluido: boolean;
-};
-
-const topicos: Topico[] = [
-  { nome: 'Funções de 1º grau', materiaVinculada: 'Matemática', concluido: true },
-  { nome: 'Sistemas lineares', materiaVinculada: 'Matemática', concluido: false },
-  { nome: 'Análise sintática', materiaVinculada: 'Português', concluido: true },
-  { nome: 'Hooks no React', materiaVinculada: 'Programação', concluido: false },
-  { nome: 'TypeScript básico', materiaVinculada: 'Programação', concluido: true },
-];
+import { buscarMateriaPorId, listarMaterias } from '../services/MateriaService';
+import { listarTopicos } from '../services/TopicoService';
+import { useCallback, useState } from 'react';
+import { useFocusEffect } from 'expo-router/build/exports';
+import { Topico } from '../types/Topico';
 
 export default function TelaTopicos() {
+ 
+
+    const [topicos, setTopicos] = useState<Topico[]>([]);
+  
+    useFocusEffect(
+      useCallback(() => {
+        setTopicos(listarTopicos());
+      }, [])
+    );
+
   return (
     <ScrollView contentContainerStyle={estilos.container}>
       <Cabecalho titulo="Tópicos" subtitulo="Conteúdos por matéria" />
@@ -29,9 +30,9 @@ export default function TelaTopicos() {
       ) : (
         topicos.map((topico) => (
           <CartaoTopico
-            key={topico.nome}
+            key={topico.id}
             nome={topico.nome}
-            materiaVinculada={topico.materiaVinculada}
+            materiaVinculada={buscarMateriaPorId(topico.materiaId)?.nome ?? 'Desconhecida'}
             concluido={topico.concluido}
           />
         ))

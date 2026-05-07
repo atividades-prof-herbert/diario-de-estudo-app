@@ -1,11 +1,22 @@
+import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
+import { useState } from 'react';
 import { router } from 'expo-router';
-import { ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 import Cabecalho from '../componentes/Cabecalho';
-import LoginPress from '../componentes/LoginPress';
+import { mostrarAlerta } from '../utils/alerta';
 
 export default function TelaLogin() {
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+
   function aoEntrar() {
+    if (!email.trim() || !senha.trim()) {
+      mostrarAlerta('Atenção', 'Preencha email e senha.');
+      return;
+    }
+    // outra forma: usar template string com ${}
+    // mostrarAlerta('Login recebido', `Email: ${email}\nSenha: ${senha}`);
+    mostrarAlerta('Login recebido', 'Email: ' + email + '\nSenha: ' + senha);
     router.replace('/inicio');
   }
 
@@ -13,13 +24,29 @@ export default function TelaLogin() {
     <ScrollView contentContainerStyle={estilos.container}>
       <Cabecalho titulo="Diário de Estudos" subtitulo="Acesse sua conta" />
 
-      <LoginPress
-        titulo="Entrar"
-        textoBotao="Entrar no diário"
-        onPress={aoEntrar}
+      <Text style={estilos.rotulo}>Email</Text>
+      <TextInput
+        style={estilos.entrada}
+        placeholder="seu@email.com"
+        value={email}
+        onChangeText={setEmail}
+        keyboardType="email-address"
+        autoCapitalize="none"
       />
 
-      {/* TouchableOpacity sem estilo de botão, age como link */}
+      <Text style={estilos.rotulo}>Senha</Text>
+      <TextInput
+        style={estilos.entrada}
+        placeholder="Digite sua senha"
+        value={senha}
+        onChangeText={setSenha}
+        secureTextEntry
+      />
+
+      <TouchableOpacity style={estilos.botao} onPress={aoEntrar}>
+        <Text style={estilos.textoBotao}>Entrar no diário</Text>
+      </TouchableOpacity>
+
       <TouchableOpacity
         style={estilos.linkContainer}
         onPress={() => router.push('/cadastro')}
@@ -36,6 +63,31 @@ const estilos = StyleSheet.create({
     backgroundColor: '#fff',
     paddingHorizontal: 24,
     paddingBottom: 40,
+  },
+  rotulo: {
+    fontSize: 14,
+    color: '#333',
+    marginTop: 16,
+    marginBottom: 4,
+  },
+  entrada: {
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    borderRadius: 8,
+    padding: 10,
+    fontSize: 14,
+  },
+  botao: {
+    backgroundColor: '#4A90D9',
+    borderRadius: 8,
+    padding: 14,
+    alignItems: 'center',
+    marginTop: 24,
+  },
+  textoBotao: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   linkContainer: {
     alignItems: 'center',

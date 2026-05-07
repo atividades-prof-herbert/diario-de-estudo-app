@@ -1,24 +1,41 @@
-import { ScrollView, StyleSheet, Text } from 'react-native';
+import { router, useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import Cabecalho from '../componentes/Cabecalho';
 import CartaoMateria from '../componentes/CartaoMateria';
-
-type Materia = {
-  nome: string;
-  descricao: string;
-  corDestaque?: string;
-};
-
-const materias: Materia[] = [
-  { nome: 'Matemática', descricao: 'Álgebra linear e cálculo diferencial' },
-  { nome: 'Português', descricao: 'Gramática, interpretação de texto e redação', corDestaque: '#E05C5C' },
-  { nome: 'Programação', descricao: 'React Native, TypeScript e lógica de programação', corDestaque: '#2ECC71' },
-];
+import { listarMaterias } from '../services/MateriaService';
+import { Materia } from '../types/Materia';
 
 export default function TelaInicio() {
+  const [materias, setMaterias] = useState<Materia[]>([]);
+
+  useFocusEffect(
+    useCallback(() => {
+      setMaterias(listarMaterias());
+    }, [])
+  );
   return (
     <ScrollView contentContainerStyle={estilos.container}>
       <Cabecalho titulo="Diário de Estudos" subtitulo="Suas matérias cadastradas" />
+
+      <View style={estilos.navContainer}>
+        <TouchableOpacity style={estilos.botao} onPress={() => router.push('/topicos')}>
+          <Text style={estilos.botaoTexto}>Tópicos</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={estilos.botao} onPress={() => router.push('/registros')}>
+          <Text style={estilos.botaoTexto}>Registros</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[estilos.botao, estilos.botaoDestaque]} onPress={() => router.push('/novo-registro')}>
+          <Text style={estilos.botaoTexto}>+ Novo Registro</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[estilos.botao, estilos.botaoDestaque]} onPress={() => router.push('/nova-materia')}>
+          <Text style={estilos.botaoTexto}>+ Nova Matéria</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[estilos.botao, estilos.botaoDestaque]} onPress={() => router.push('/novo-topico')}>
+          <Text style={estilos.botaoTexto}>+ Novo Tópico</Text>
+        </TouchableOpacity>
+      </View>
 
       {/* Ternário: precisamos exibir UMA coisa OU OUTRA (mensagem ou lista),
           então o ternário deixa a intenção mais explícita do que um && duplo. */}
@@ -50,5 +67,26 @@ const estilos = StyleSheet.create({
     fontStyle: 'italic',
     marginTop: 12,
     marginHorizontal: 20,
+  },
+  navContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+    marginHorizontal: 20,
+    marginBottom: 20,
+  },
+  botao: {
+    backgroundColor: '#4A90D9',
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+  },
+  botaoDestaque: {
+    backgroundColor: '#2ECC71',
+  },
+  botaoTexto: {
+    color: '#FFF',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
 });

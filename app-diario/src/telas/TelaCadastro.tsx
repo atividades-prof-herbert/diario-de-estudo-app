@@ -1,31 +1,58 @@
-import { router } from 'expo-router';
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
+import { useState } from 'react';
+import { router } from 'expo-router';
 
 import Cabecalho from '../componentes/Cabecalho';
+import { mostrarAlerta } from '../utils/alerta';
 
 export default function TelaCadastro() {
+  const [nome, setNome] = useState('');
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+
+  function aoCriarConta() {
+    if (!nome.trim() || !email.trim() || !senha.trim()) {
+      mostrarAlerta('Atenção', 'Preencha todos os campos.');
+      return;
+    }
+    // outra forma: usar template string com ${}
+    // mostrarAlerta('Conta criada!', `Nome: ${nome}\nEmail: ${email}\nSenha: ${senha}`);
+    mostrarAlerta('Conta criada!', 'Nome: ' + nome + '\nEmail: ' + email + '\nSenha: ' + senha);
+    router.replace('/');
+  }
+
   return (
     <ScrollView contentContainerStyle={estilos.container}>
       <Cabecalho titulo="Criar conta" />
 
       <Text style={estilos.rotulo}>Nome</Text>
-      <TextInput style={estilos.entrada} placeholder="Seu nome completo" />
+      <TextInput
+        style={estilos.entrada}
+        placeholder="Seu nome completo"
+        value={nome}
+        onChangeText={setNome}
+      />
 
       <Text style={estilos.rotulo}>Email</Text>
       <TextInput
         style={estilos.entrada}
         placeholder="seu@email.com"
+        value={email}
+        onChangeText={setEmail}
         keyboardType="email-address"
         autoCapitalize="none"
       />
 
       <Text style={estilos.rotulo}>Senha</Text>
-      <TextInput style={estilos.entrada} placeholder="Crie uma senha" secureTextEntry />
+      <TextInput
+        style={estilos.entrada}
+        placeholder="Crie uma senha"
+        value={senha}
+        onChangeText={setSenha}
+        secureTextEntry
+      />
 
-      <TouchableOpacity
-        style={estilos.botao}
-        onPress={() => router.replace('/')}
-      >
+      <TouchableOpacity style={estilos.botao} onPress={aoCriarConta}>
         <Text style={estilos.textoBotao}>Criar conta</Text>
       </TouchableOpacity>
     </ScrollView>

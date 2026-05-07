@@ -115,3 +115,23 @@ Nesta etapa foram trabalhados:
 Material da aula:
 
 - [aulas/5_rotas.md](aulas/5_rotas.md)
+
+
+### Aula 06 - Hooks e Estado com `useState`
+A branch `aula-06-hooks-states` introduz o conceito de estado em componentes React e o hook `useState`, permitindo que o app reaja às ações do usuário.
+
+Nesta etapa foram trabalhados:
+
+- o problema dos componentes estáticos e por que as props não bastam
+- `useState` para armazenar dados que mudam ao longo do tempo
+- inputs controlados: conectar `TextInput` ao estado com `value` e `onChangeText`
+- validação e feedback com `mostrarAlerta` (utilitário compatível com web e mobile)
+- gravação de dados no service (`adicionarMateria`, `adicionarTopico`)
+- limpeza dos campos após salvar
+- atualização da lista ao voltar para a tela com `useFocusEffect`
+
+
+
+Material da aula:
+
+- [aulas/6_hooks.md](aulas/6_hooks.md)
