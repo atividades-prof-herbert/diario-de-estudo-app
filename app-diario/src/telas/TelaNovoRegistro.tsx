@@ -1,18 +1,42 @@
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
+import { useState } from 'react';
 import { mostrarAlerta } from '../utils/alerta';
 
 import Cabecalho from '../componentes/Cabecalho';
 
 export default function TelaNovoRegistro() {
+  const [materia, setMateria] = useState('');
+  const [topico, setTopico] = useState('');
+  const [descricao, setDescricao] = useState('');
+  const [data, setData] = useState('');
+
+  function salvar() {
+    if (!materia.trim() || !topico.trim()) {
+      mostrarAlerta('Atenção', 'Preencha a matéria e o tópico.');
+      return;
+    }
+    mostrarAlerta('Registro salvo!', 'Matéria: ' + materia + '\nTópico: ' + topico + '\nDescrição: ' + descricao + '\nData: ' + data);
+  }
+
   return (
     <ScrollView contentContainerStyle={estilos.container}>
       <Cabecalho titulo="Novo registro" />
 
       <Text style={estilos.label}>Nome da matéria</Text>
-      <TextInput style={estilos.input} placeholder="Ex.: Matemática" />
+      <TextInput
+        style={estilos.input}
+        placeholder="Ex.: Matemática"
+        value={materia}
+        onChangeText={setMateria}
+      />
 
       <Text style={estilos.label}>Nome do tópico</Text>
-      <TextInput style={estilos.input} placeholder="Ex.: Derivadas" />
+      <TextInput
+        style={estilos.input}
+        placeholder="Ex.: Derivadas"
+        value={topico}
+        onChangeText={setTopico}
+      />
 
       <Text style={estilos.label}>Descrição</Text>
       <TextInput
@@ -20,15 +44,19 @@ export default function TelaNovoRegistro() {
         placeholder="Descreva brevemente a sessão de estudo"
         multiline
         numberOfLines={3}
+        value={descricao}
+        onChangeText={setDescricao}
       />
 
       <Text style={estilos.label}>Data</Text>
-      <TextInput style={estilos.input} placeholder="Ex.: 24/04/2025" />
+      <TextInput
+        style={estilos.input}
+        placeholder="Ex.: 24/04/2025"
+        value={data}
+        onChangeText={setData}
+      />
 
-      <TouchableOpacity
-        style={estilos.botao}
-        onPress={() => mostrarAlerta('Registro salvo com sucesso!')}
-      >
+      <TouchableOpacity style={estilos.botao} onPress={salvar}>
         <Text style={estilos.botaoTexto}>Salvar registro</Text>
       </TouchableOpacity>
     </ScrollView>

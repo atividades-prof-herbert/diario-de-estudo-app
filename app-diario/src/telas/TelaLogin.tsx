@@ -15,7 +15,7 @@ export default function TelaLogin() {
       return;
     }
     // outra forma: usar template string com ${}
-    // mostrarAlerta('Login recebido', `Email: ${email}\nSenha: ${senha}`);
+    //mostrarAlerta('Login recebido', `Email: ${email}\nSenha: ${senha}`);
     mostrarAlerta('Login recebido', 'Email: ' + email + '\nSenha: ' + senha);
     router.replace('/inicio');
   }

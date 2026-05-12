@@ -3,6 +3,7 @@ import { mostrarAlerta } from '../utils/alerta';
 import { useState } from 'react';
 
 import Cabecalho from '../componentes/Cabecalho';
+import { adicionarTopico } from '../services/TopicoService';
 
 export default function TelaNovoTopico() {
   const [nome, setNome] = useState('');
@@ -18,7 +19,11 @@ export default function TelaNovoTopico() {
       mostrarAlerta('Campo obrigatório', 'Informe a matéria do tópico.');
       return;
     }
-    mostrarAlerta('Tópico salvo com sucesso!');
+    adicionarTopico({ nome, materia, concluido });
+    mostrarAlerta('Tópico salvo!', 'Nome: ' + nome + '\nMatéria: ' + materia);
+    setNome('');
+    setMateria('');
+    setConcluido(false);
   }
 
   return (
