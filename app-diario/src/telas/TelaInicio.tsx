@@ -43,12 +43,13 @@ export default function TelaInicio() {
         <Text style={estilos.vazio}>Nenhuma matéria cadastrada.</Text>
       ) : (
         materias.map((item) => (
-          <CartaoMateria
-            key={item.nome}
-            nome={item.nome}
-            descricao={item.descricao}
-            corDestaque={item.corDestaque}
-          />
+          <TouchableOpacity key={item.id} onPress={() => router.push('/topicos-materia/' + item.id)}>
+            <CartaoMateria
+              nome={item.nome}
+              descricao={item.descricao}
+              corDestaque={item.corDestaque}
+            />
+          </TouchableOpacity>
         ))
       )}
     </ScrollView>

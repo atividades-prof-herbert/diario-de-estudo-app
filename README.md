@@ -135,3 +135,17 @@ Nesta etapa foram trabalhados:
 Material da aula:
 
 - [aulas/6_hooks.md](aulas/6_hooks.md)
+
+
+### Aula 07 - Rotas com parâmetros, `useEffect` e `Picker`
+A branch `aula-07-hooks` expande o uso de hooks e introduz navegação com parâmetros dinâmicos, carregamento de dados com `useEffect` e seleção com `Picker`.
+
+Nesta etapa foram trabalhados:
+
+- rotas dinâmicas no Expo Router: pasta = rota, `[id].tsx` = segmento dinâmico
+- `useEffect`: conceito de efeito colateral, array de dependências (`[]`, `[valor]`, omitido)
+- `Picker` do `@react-native-picker/picker`: `selectedValue`, `onValueChange`, `Picker.Item`
+
+Material da aula:
+
+- [aulas/7_hooks.md](aulas/7_hooks.md)

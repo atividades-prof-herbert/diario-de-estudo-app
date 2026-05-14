@@ -1,30 +1,31 @@
+import { useLocalSearchParams } from 'expo-router';
+import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text } from 'react-native';
 
 import Cabecalho from '../componentes/Cabecalho';
 import CartaoTopico from '../componentes/CartaoTopico';
 import { buscarMateriaPorId } from '../services/MateriaService';
-import { listarTopicos } from '../services/TopicoService';
-import { useCallback, useState } from 'react';
-import { useFocusEffect } from 'expo-router/build/exports';
+import { listarTopicosPorMateria } from '../services/TopicoService';
 import { Topico } from '../types/Topico';
+import { mostrarAlerta } from '../utils/alerta';
 
-export default function TelaTopicos() {
- 
+export default function TelaTopicosMateria() {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const [topicos, setTopicos] = useState<Topico[]>([]);
 
-    const [topicos, setTopicos] = useState<Topico[]>([]);
-  
-    useFocusEffect(
-      useCallback(() => {
-        setTopicos(listarTopicos());
-      }, [])
-    );
+  const materia = buscarMateriaPorId(Number(id));
+  mostrarAlerta('Matéria selecionada', `Você selecionou a matéria: ${materia?.nome ?? 'Desconhecida'}`);
+
+  useEffect(() => {
+    if (materia) {
+      setTopicos(listarTopicosPorMateria(materia.id));
+    }
+  }, [id]);
 
   return (
     <ScrollView contentContainerStyle={estilos.container}>
-      <Cabecalho titulo="Tópicos" subtitulo="Conteúdos por matéria" />
+      <Cabecalho titulo={materia?.nome ?? 'Tópicos'} subtitulo="Conteúdos desta matéria" />
 
-      {/* Ternário: precisamos exibir UMA coisa OU OUTRA (mensagem ou lista),
-          então o ternário deixa a intenção mais explícita do que um && duplo. */}
       {topicos.length === 0 ? (
         <Text style={estilos.vazio}>Nenhum tópico cadastrado.</Text>
       ) : (
@@ -32,7 +33,7 @@ export default function TelaTopicos() {
           <CartaoTopico
             key={topico.id}
             nome={topico.nome}
-            materiaVinculada={buscarMateriaPorId(topico.materiaId)?.nome ?? 'Desconhecida'}
+            materiaVinculada={materia?.nome ?? 'Desconhecida'}
             concluido={topico.concluido}
           />
         ))

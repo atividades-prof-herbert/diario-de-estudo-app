@@ -1,28 +1,36 @@
+import { Picker } from '@react-native-picker/picker';
 import { ScrollView, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { mostrarAlerta } from '../utils/alerta';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Cabecalho from '../componentes/Cabecalho';
+import { listarMaterias } from '../services/MateriaService';
 import { adicionarTopico } from '../services/TopicoService';
+import { Materia } from '../types/Materia';
 
 export default function TelaNovoTopico() {
   const [nome, setNome] = useState('');
-  const [materia, setMateria] = useState('');
+  const [materiaId, setMateriaId] = useState(0);
   const [concluido, setConcluido] = useState(false);
+  const [materias, setMaterias] = useState<Materia[]>([]);
+
+  useEffect(() => {
+    setMaterias(listarMaterias());
+  }, []);
 
   function salvar() {
     if (!nome.trim()) {
       mostrarAlerta('Campo obrigatório', 'Informe o nome do tópico.');
       return;
     }
-    if (!materia.trim()) {
-      mostrarAlerta('Campo obrigatório', 'Informe a matéria do tópico.');
+    if (!materiaId) {
+      mostrarAlerta('Campo obrigatório', 'Selecione a matéria do tópico.');
       return;
     }
-    adicionarTopico({ nome, materia, concluido });
-    mostrarAlerta('Tópico salvo!', 'Nome: ' + nome + '\nMatéria: ' + materia);
+    adicionarTopico({ nome, materiaId, concluido });
+    mostrarAlerta('Tópico salvo!', 'Nome: ' + nome);
     setNome('');
-    setMateria('');
+    setMateriaId(0);
     setConcluido(false);
   }
 
@@ -39,12 +47,14 @@ export default function TelaNovoTopico() {
       />
 
       <Text style={estilos.label}>Matéria *</Text>
-      <TextInput
-        style={estilos.input}
-        placeholder="Ex.: Matemática"
-        value={materia}
-        onChangeText={setMateria}
-      />
+      <View style={estilos.picker}>
+        <Picker selectedValue={materiaId} onValueChange={setMateriaId}>
+          <Picker.Item label="Selecione uma matéria..." value={0} />
+          {materias.map((m) => (
+            <Picker.Item key={m.id} label={m.nome} value={m.id} />
+          ))}
+        </Picker>
+      </View>
 
       <View style={estilos.switchRow}>
         <Text style={estilos.label}>Concluído</Text>
@@ -78,6 +88,11 @@ const estilos = StyleSheet.create({
     padding: 10,
     fontSize: 14,
     color: '#222',
+  },
+  picker: {
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    borderRadius: 8,
   },
   switchRow: {
     flexDirection: 'row',

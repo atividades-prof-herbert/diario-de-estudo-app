@@ -17,12 +17,13 @@ export function listarTopicos(): Topico[] {
   return [...db];
 }
 
+
 export function buscarTopicoPorId(id: number): Topico | undefined {
   return db.find((t) => t.id === id);
 }
 
 export function listarTopicosPorMateria(materiaId: number): Topico[] {
-  return db.filter((t) => t.materiaId === materiaId);
+  return db.filter((t) => t.materiaId == materiaId);
 }
 
 export function adicionarTopico(dados: Omit<Topico, 'id'>): Topico {
