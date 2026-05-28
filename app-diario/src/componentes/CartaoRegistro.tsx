@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from 'react-native';
 
 type CartaoRegistroProps = {
   materia: string;
-  topico: string;
+  topico?: string;
   descricao?: string;
   data: string;
 };
@@ -11,7 +11,7 @@ export default function CartaoRegistro({ materia, topico, descricao, data }: Car
   return (
     <View style={estilos.cartao}>
       <Text style={estilos.materia}>{materia}</Text>
-      <Text style={estilos.topico}>{topico}</Text>
+      {topico && <Text style={estilos.topico}>{topico}</Text>}
       {descricao && <Text style={estilos.descricao}>{descricao}</Text>}
       <Text style={estilos.data}>{data}</Text>
     </View>

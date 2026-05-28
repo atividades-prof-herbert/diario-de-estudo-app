@@ -1,42 +1,73 @@
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
-import { useState } from 'react';
+import { Picker } from '@react-native-picker/picker';
+import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useEffect, useState } from 'react';
 import { mostrarAlerta } from '../utils/alerta';
 
 import Cabecalho from '../componentes/Cabecalho';
+import { listarMaterias } from '../services/MateriaService';
+import { adicionarRegistro } from '../services/RegistroService';
+import { listarTopicosPorMateria } from '../services/TopicoService';
+import { Materia } from '../types/Materia';
+import { Topico } from '../types/Topico';
 
 export default function TelaNovoRegistro() {
-  const [materia, setMateria] = useState('');
-  const [topico, setTopico] = useState('');
+  const [materiaId, setMateriaId] = useState(0);
+  const [topicoId, setTopicoId] = useState(0);
   const [descricao, setDescricao] = useState('');
   const [data, setData] = useState('');
 
+  const [materias, setMaterias] = useState<Materia[]>([]);
+  const [topicos, setTopicos] = useState<Topico[]>([]);
+
+  useEffect(() => {
+    setMaterias(listarMaterias());
+  }, []);
+
+  useEffect(() => {
+    if (materiaId) {
+      setTopicos(listarTopicosPorMateria(materiaId));
+    } else {
+      setTopicos([]);
+    }
+    setTopicoId(0);
+  }, [materiaId]);
+
   function salvar() {
-    if (!materia.trim() || !topico.trim()) {
-      mostrarAlerta('Atenção', 'Preencha a matéria e o tópico.');
+    if (!materiaId) {
+      mostrarAlerta('Campo obrigatório', 'Selecione a matéria.');
       return;
     }
-    mostrarAlerta('Registro salvo!', 'Matéria: ' + materia + '\nTópico: ' + topico + '\nDescrição: ' + descricao + '\nData: ' + data);
+    adicionarRegistro({ materiaId, topicoId: topicoId || undefined, descricao, data });
+    mostrarAlerta('Registro salvo!', 'Registro adicionado com sucesso.');
+    setMateriaId(0);
+    setTopicoId(0);
+    setDescricao('');
+    setData('');
   }
 
   return (
     <ScrollView contentContainerStyle={estilos.container}>
       <Cabecalho titulo="Novo registro" />
 
-      <Text style={estilos.label}>Nome da matéria</Text>
-      <TextInput
-        style={estilos.input}
-        placeholder="Ex.: Matemática"
-        value={materia}
-        onChangeText={setMateria}
-      />
+      <Text style={estilos.label}>Matéria</Text>
+      <View style={estilos.picker}>
+        <Picker selectedValue={materiaId} onValueChange={setMateriaId}>
+          <Picker.Item label="Selecione uma matéria..." value={0} />
+          {materias.map((m) => (
+            <Picker.Item key={m.id} label={m.nome} value={m.id} />
+          ))}
+        </Picker>
+      </View>
 
-      <Text style={estilos.label}>Nome do tópico</Text>
-      <TextInput
-        style={estilos.input}
-        placeholder="Ex.: Derivadas"
-        value={topico}
-        onChangeText={setTopico}
-      />
+      <Text style={estilos.label}>Tópico</Text>
+      <View style={estilos.picker}>
+        <Picker selectedValue={topicoId} onValueChange={setTopicoId} enabled={materiaId !== 0}>
+          <Picker.Item label={materiaId ? 'Selecione um tópico...' : 'Selecione a matéria primeiro'} value={0} />
+          {topicos.map((t) => (
+            <Picker.Item key={t.id} label={t.nome} value={t.id} />
+          ))}
+        </Picker>
+      </View>
 
       <Text style={estilos.label}>Descrição</Text>
       <TextInput
@@ -83,6 +114,11 @@ const estilos = StyleSheet.create({
     padding: 10,
     fontSize: 14,
     color: '#222',
+  },
+  picker: {
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    borderRadius: 8,
   },
   inputMultiline: {
     height: 80,

@@ -7,14 +7,12 @@ import CartaoTopico from '../componentes/CartaoTopico';
 import { buscarMateriaPorId } from '../services/MateriaService';
 import { listarTopicosPorMateria } from '../services/TopicoService';
 import { Topico } from '../types/Topico';
-import { mostrarAlerta } from '../utils/alerta';
 
 export default function TelaTopicosMateria() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [topicos, setTopicos] = useState<Topico[]>([]);
 
   const materia = buscarMateriaPorId(Number(id));
-  mostrarAlerta('Matéria selecionada', `Você selecionou a matéria: ${materia?.nome ?? 'Desconhecida'}`);
 
   useEffect(() => {
     if (materia) {

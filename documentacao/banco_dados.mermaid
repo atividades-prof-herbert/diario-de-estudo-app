@@ -1,0 +1,26 @@
+erDiagram
+    MATERIA {
+        int id PK
+        string nome
+        string descricao
+        string corDestaque
+    }
+
+    TOPICO {
+        int id PK
+        string nome
+        int materiaId FK
+        boolean concluido
+    }
+
+    REGISTRO {
+        int id PK
+        int materiaId FK
+        int topicoId FK
+        string descricao
+        string data
+    }
+
+    MATERIA ||--o{ TOPICO : "possui"
+    MATERIA ||--o{ REGISTRO : "referenciada em"
+    TOPICO  ||--o{ REGISTRO : "referenciado em"

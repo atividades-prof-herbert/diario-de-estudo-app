@@ -22,7 +22,7 @@ export default function TelaRegistro() {
           <CartaoRegistro
             key={item.id}
             materia={buscarMateriaPorId(item.materiaId)?.nome ?? 'Desconhecida'}
-            topico={buscarTopicoPorId(item.topicoId)?.nome ?? 'Desconhecido'}
+            topico={item.topicoId ? buscarTopicoPorId(item.topicoId)?.nome : undefined}
             descricao={item.descricao}
             data={item.data}
           />
