@@ -183,8 +183,17 @@ materias.map((m) => (
 
 ## Exercícios
 
-1. Implemente um botão "Cancelar edição" para que seja possível o usuário inserir uma nova matéria sem precisar abri-lá novamente.
-2. O botão "Cancelar edição" só deve ser renderizado se o usuário clicar em "editar" de alguma máteria.
+### Problema
+
+A tela `TelaNovaMateria` mistura dois modos de operação: criação e edição. Quando o usuário toca em **Editar** em um cartão, o formulário é preenchido com os dados da matéria e o estado `editandoId` passa de `null` para o ID do registro. A partir desse momento, o botão **Salvar** dispara uma atualização, não uma criação.
+
+O problema é que, estando no modo de edição, não há como o usuário desistir da edição e cadastrar uma nova matéria sem sair da tela e voltar. Não existe um caminho visual para abandonar a edição e retornar ao modo de criação.
+
+### O que precisa ser feito
+
+1. Adicione um botão **Cancelar edição** logo abaixo do botão **Salvar alterações**. Ao ser pressionado, ele deve chamar `limparFormulario()`, que já zera os campos e redefine `editandoId` para `null`, devolvendo o formulário ao modo de criação.
+
+2. O botão **Cancelar edição** só deve aparecer quando o formulário estiver no modo de edição, ou seja, quando `editandoId !== null`. Em modo de criação, o botão não deve existir no layout. Use renderização condicional para isso.
 
 ---
 
