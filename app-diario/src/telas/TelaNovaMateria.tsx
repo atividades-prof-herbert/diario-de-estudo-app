@@ -100,6 +100,12 @@ export default function TelaNovaMateria() {
         </Text>
       </TouchableOpacity>
 
+      {editandoId !== null && (
+        <TouchableOpacity style={estilos.botaoCancelar} onPress={limparFormulario}>
+          <Text style={estilos.botaoCancelarTexto}>Cancelar edição</Text>
+        </TouchableOpacity>
+      )}
+
       <Text style={estilos.secaoTitulo}>Matérias cadastradas</Text>
 
       {materias.length === 0 ? (
@@ -153,6 +159,19 @@ const estilos = StyleSheet.create({
   },
   botaoTexto: {
     color: '#FFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  botaoCancelar: {
+    borderWidth: 1,
+    borderColor: '#4A90D9',
+    borderRadius: 8,
+    padding: 14,
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  botaoCancelarTexto: {
+    color: '#4A90D9',
     fontSize: 16,
     fontWeight: 'bold',
   },
