@@ -183,9 +183,8 @@ materias.map((m) => (
 
 ## Exercícios
 
-1. Implemente a mesma lógica de CRUD na tela de tópicos (`TelaTopicos`).
-2. Adicione um botão "Cancelar" que só aparece quando `editandoId !== null` — ele deve chamar `limparFormulario()` e voltar ao modo de criação.
-
+1. Implemente um botão "Cancelar edição" para que seja possível o usuário inserir uma nova matéria sem precisar abri-lá novamente.
+2. O botão "Cancelar edição" só deve ser renderizado se o usuário clicar em "editar" de alguma máteria.
 
 ---
 
