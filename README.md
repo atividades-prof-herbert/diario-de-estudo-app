@@ -149,3 +149,37 @@ Nesta etapa foram trabalhados:
 Material da aula:
 
 - [aulas/7_hooks.md](aulas/7_hooks.md)
+
+
+### Aula 08 - Hooks (parte 2): `find`, `?.` e `Picker` dependente
+A branch `aula-08-hooks` resolve o exercício da aula anterior e aprofunda o uso de arrays e operadores de segurança do JavaScript.
+
+Nesta etapa foram trabalhados:
+
+- substituição do `TextInput` livre de matéria por `Picker` em `TelaNovoRegistro`
+- `materiaId: number` como estado em vez de string — ids são estáveis, nomes podem mudar
+- método `find` para buscar um objeto pelo id dentro de um array
+- optional chaining `?.` para acesso seguro a propriedades que podem ser `undefined`
+- nullish coalescing `??` como valor de fallback quando o resultado é `undefined` ou `null`
+- exercício: filtro de tópicos por matéria em `TelaTopicos` com `useEffect` de dependência `[materiaId]`
+
+Material da aula:
+
+- [aulas/8_hooks.md](aulas/8_hooks.md)
+
+
+### Aula 09 - Hooks (parte 3): CRUD numa tela só
+A branch `aula-09-hooks` implementa o exercício da aula anterior e constrói uma tela com formulário, lista, edição e exclusão em um único componente.
+
+Nesta etapa foram trabalhados:
+
+- implementação do exercício da aula 8: filtro de tópicos por matéria em `TelaTopicos`
+- `useEffect` encadeado em `TelaNovoRegistro`: seleção de matéria dispara carregamento dos tópicos
+- `useEffect` com `[]` para carregar dados na montagem da tela
+- estado `editandoId: number | null` para alternar entre modo criação e modo edição
+- funções auxiliares `recarregar()` e `limparFormulario()` para isolar responsabilidades
+- props `onEditar` e `onExcluir` como callbacks opcionais no `CartaoMateria`
+
+Material da aula:
+
+- [aulas/9_hooks.md](aulas/9_hooks.md)

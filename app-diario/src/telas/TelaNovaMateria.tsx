@@ -1,34 +1,72 @@
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Cabecalho from '../componentes/Cabecalho';
-import { adicionarMateria } from '../services/MateriaService';
-import { mostrarAlerta } from '../utils/alerta';
+import CartaoMateria from '../componentes/CartaoMateria';
+import { adicionarMateria, atualizarMateria, listarMaterias, removerMateria } from '../services/MateriaService';
+import { confirmarAlerta, mostrarAlerta } from '../utils/alerta';
+import { Materia } from '../types/Materia';
 
 export default function TelaNovaMateria() {
   const [nome, setNome] = useState('');
   const [descricao, setDescricao] = useState('');
   const [corDestaque, setCorDestaque] = useState('');
+  const [editandoId, setEditandoId] = useState<number | null>(null);
+
+  const [materias, setMaterias] = useState<Materia[]>([]);
+
+  useEffect(() => {
+    setMaterias(listarMaterias());
+  }, []);
+
+  function recarregar() {
+    setMaterias(listarMaterias());
+  }
+
+  function limparFormulario() {
+    setNome('');
+    setDescricao('');
+    setCorDestaque('');
+    setEditandoId(null);
+  }
 
   function salvar() {
     if (!nome.trim()) {
       mostrarAlerta('Campo obrigatório', 'Informe o nome da matéria.');
       return;
     }
-    
-    //adiciona a materia no banco de dados
-    adicionarMateria({ nome, descricao, corDestaque: corDestaque || undefined });
 
-    //exibe o alerta de sucesso e limpa os campos do formulário
-    mostrarAlerta('Matéria salva!', `"${nome}" adicionada com sucesso.`);
-    setNome('');
-    setDescricao('');
-    setCorDestaque('');
+    if (editandoId !== null) {
+      atualizarMateria(editandoId, { nome, descricao, corDestaque: corDestaque || undefined });
+    } else {
+      adicionarMateria({ nome, descricao, corDestaque: corDestaque || undefined });
+    }
+
+    limparFormulario();
+    recarregar();
+  }
+
+  function editar(materia: Materia) {
+    setNome(materia.nome);
+    setDescricao(materia.descricao);
+    setCorDestaque(materia.corDestaque ?? '');
+    setEditandoId(materia.id);
+  }
+
+  function excluir(id: number, nomeDaMateria: string) {
+    confirmarAlerta(
+      'Excluir matéria',
+      `Deseja excluir "${nomeDaMateria}"?`,
+      () => {
+        removerMateria(id);
+        recarregar();
+      }
+    );
   }
 
   return (
     <ScrollView contentContainerStyle={estilos.container}>
-      <Cabecalho titulo="Nova matéria" />
+      <Cabecalho titulo={editandoId !== null ? 'Editar matéria' : 'Nova matéria'} />
 
       <Text style={estilos.label}>Nome *</Text>
       <TextInput
@@ -55,11 +93,29 @@ export default function TelaNovaMateria() {
         value={corDestaque}
         onChangeText={setCorDestaque}
       />
-      
 
       <TouchableOpacity style={estilos.botao} onPress={salvar}>
-        <Text style={estilos.botaoTexto}>Salvar matéria</Text>
+        <Text style={estilos.botaoTexto}>
+          {editandoId !== null ? 'Salvar alterações' : 'Salvar matéria'}
+        </Text>
       </TouchableOpacity>
+
+      <Text style={estilos.secaoTitulo}>Matérias cadastradas</Text>
+
+      {materias.length === 0 ? (
+        <Text style={estilos.vazio}>Nenhuma matéria cadastrada.</Text>
+      ) : (
+        materias.map((m) => (
+          <CartaoMateria
+            key={m.id}
+            nome={m.nome}
+            descricao={m.descricao}
+            corDestaque={m.corDestaque}
+            onEditar={() => editar(m)}
+            onExcluir={() => excluir(m.id, m.nome)}
+          />
+        ))
+      )}
     </ScrollView>
   );
 }
@@ -89,21 +145,31 @@ const estilos = StyleSheet.create({
     height: 80,
     textAlignVertical: 'top',
   },
-  previewCor: {
-    height: 24,
-    borderRadius: 6,
-    marginTop: 8,
-  },
   botao: {
     backgroundColor: '#4A90D9',
     borderRadius: 8,
     padding: 14,
     alignItems: 'center',
-    marginTop: 24,
   },
   botaoTexto: {
     color: '#FFF',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  secaoTitulo: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    marginTop: 32,
+    marginBottom: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#E0E0E0',
+    paddingTop: 16,
+  },
+  vazio: {
+    fontSize: 14,
+    color: '#777',
+    fontStyle: 'italic',
+    marginTop: 8,
   },
 });
