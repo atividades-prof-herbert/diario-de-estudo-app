@@ -183,3 +183,43 @@ Nesta etapa foram trabalhados:
 Material da aula:
 
 - [aulas/9_hooks.md](aulas/9_hooks.md)
+
+
+### Aula 10 - Hooks (parte 4): rota com parâmetro opcional e `useFocusEffect`
+A branch `aula-10-hooks` implementa o exercício da aula 9 (botão "Cancelar edição") e resolve o problema de usar a mesma tela para criar e editar um registro de estudo.
+
+Nesta etapa foram trabalhados:
+
+- botão "Cancelar edição" com renderização condicional (`editandoId !== null &&`)
+- parâmetro opcional de rota via query string (`/registrar-estudo?id=3`) em vez de segmento dinâmico obrigatório (`[id].tsx`)
+- leitura do parâmetro opcional com `useLocalSearchParams<{ id?: string }>()`
+- decisão entre criar e atualizar com base na presença do `id`
+- `useFocusEffect` + `useCallback` para recarregar a lista sempre que a tela ganha foco, resolvendo a limitação do `useEffect` com `[]` (que não roda de novo ao voltar de outra tela)
+- atividade avaliativa: edição de registros de estudo, com renomeação de `TelaNovoRegistro` para `TelaRegistrarEstudo`
+
+Material da aula:
+
+- [aulas/10_hooks.md](aulas/10_hooks.md)
+
+
+### Aula 11 - Firebase: configuração e Firestore
+A branch `aula-11-firebase` introduz o Firebase como backend do projeto, com o Cloud Firestore explorado primeiro em um script isolado (`firebase-cli/`), fora do aplicativo.
+
+Nesta etapa foram trabalhados:
+
+- criação de projeto no console do Firebase e registro do app web
+- ativação do Cloud Firestore em modo de teste
+- instalação do SDK (`firebase`) e configuração de `services/firebase.ts` com `initializeApp` e `getFirestore`
+- modelo de dados NoSQL orientado a documentos: coleção, documento, campo, comparação com o modelo relacional (tabela, linha, coluna)
+- subcoleções como forma de modelar hierarquias
+- operações do Firestore: `addDoc`, `setDoc`, `getDocs`, `getDoc`, `updateDoc`, `deleteDoc`
+- `QuerySnapshot` e `DocumentSnapshot`: `.docs`, `.data()`, `.exists()`
+- diferença entre `setDoc` (sobrescreve o documento) e `updateDoc` (mescla com o existente)
+- filtros com `query` e `where`, incluindo múltiplos `where` encadeados
+- por que `addDoc` recebe uma coleção enquanto `setDoc`/`updateDoc`/`deleteDoc` recebem uma referência de documento (`doc()`)
+- atividade avaliativa (B3A1): implementação de `crud-topicos.js` e `crud-registros.js` seguindo o padrão de `crud-materias.js`, e elaboração de um plano de consistência para exclusões em cascata (inexistentes no Firestore)
+
+Material da aula:
+
+- [aulas/11_firebase.md](aulas/11_firebase.md)
+- [aulas/11_firebase_atividade.md](aulas/11_firebase_atividade.md)
