@@ -183,3 +183,62 @@ Nesta etapa foram trabalhados:
 Material da aula:
 
 - [aulas/9_hooks.md](aulas/9_hooks.md)
+
+
+### Aula 10 - Hooks (parte 4): rota com parâmetro opcional e `useFocusEffect`
+A branch `aula-10-hooks` implementa o exercício da aula 9 (botão "Cancelar edição") e resolve o problema de usar a mesma tela para criar e editar um registro de estudo.
+
+Nesta etapa foram trabalhados:
+
+- botão "Cancelar edição" com renderização condicional (`editandoId !== null &&`)
+- parâmetro opcional de rota via query string (`/registrar-estudo?id=3`) em vez de segmento dinâmico obrigatório (`[id].tsx`)
+- leitura do parâmetro opcional com `useLocalSearchParams<{ id?: string }>()`
+- decisão entre criar e atualizar com base na presença do `id`
+- `useFocusEffect` + `useCallback` para recarregar a lista sempre que a tela ganha foco, resolvendo a limitação do `useEffect` com `[]` (que não roda de novo ao voltar de outra tela)
+- atividade avaliativa: edição de registros de estudo, com renomeação de `TelaNovoRegistro` para `TelaRegistrarEstudo`
+
+Material da aula:
+
+- [aulas/10_hooks.md](aulas/10_hooks.md)
+
+
+### Aula 11 - Firebase: configuração e Firestore
+A branch `aula-11-firebase` introduz o Firebase como backend do projeto, com o Cloud Firestore explorado primeiro em um script isolado (`firebase-cli/`), fora do aplicativo.
+
+Nesta etapa foram trabalhados:
+
+- criação de projeto no console do Firebase e registro do app web
+- ativação do Cloud Firestore em modo de teste
+- instalação do SDK (`firebase`) e configuração de `services/firebase.ts` com `initializeApp` e `getFirestore`
+- modelo de dados NoSQL orientado a documentos: coleção, documento, campo, comparação com o modelo relacional (tabela, linha, coluna)
+- subcoleções como forma de modelar hierarquias
+- operações do Firestore: `addDoc`, `setDoc`, `getDocs`, `getDoc`, `updateDoc`, `deleteDoc`
+- `QuerySnapshot` e `DocumentSnapshot`: `.docs`, `.data()`, `.exists()`
+- diferença entre `setDoc` (sobrescreve o documento) e `updateDoc` (mescla com o existente)
+- filtros com `query` e `where`, incluindo múltiplos `where` encadeados
+- por que `addDoc` recebe uma coleção enquanto `setDoc`/`updateDoc`/`deleteDoc` recebem uma referência de documento (`doc()`)
+- atividade avaliativa (B3A1): implementação de `crud-topicos.js` e `crud-registros.js` seguindo o padrão de `crud-materias.js`, e elaboração de um plano de consistência para exclusões em cascata (inexistentes no Firestore)
+
+Material da aula:
+
+- [aulas/11_firebase.md](aulas/11_firebase.md)
+- [aulas/11_firebase_atividade.md](aulas/11_firebase_atividade.md)
+
+
+### Aula 12 - Firebase no aplicativo
+A branch `aula-12-firebase` aplica dentro do app real o conhecimento explorado isoladamente na aula 11: o `MateriaService.ts` deixa de manter um array em memória e passa a ler e gravar diretamente na coleção `materias` do Firestore.
+
+Nesta etapa foram trabalhados:
+
+- a pasta `services` como fronteira entre a interface e a origem dos dados, permitindo trocar o array em memória pelo Firestore sem alterar as telas
+- `types/Materia.ts` passando a representar também o formato de um documento da coleção `materias`, com `id` mudando de `number` para `string` (identificadores gerados pelo Firestore)
+- refatoração do `MateriaService.ts` com `collection`, `doc`, `addDoc`, `getDoc`, `getDocs`, `updateDoc` e `deleteDoc`, e funções passando a retornar `Promise`
+- efeito cascata da migração: chamadas síncronas viram assíncronas (`useEffect` com função `async` interna), e o `id` numérico virando texto exige ajustes em `Picker`s (sentinela `''` no lugar de `0`) e nos tipos `Topico`/`Registro` (`materiaId: string`)
+- caso particular de `TelaTopicos.tsx` e `TelaRegistro.tsx`: chamada síncrona dentro de `.map()` substituída por carregar a lista uma vez em estado e usar `.find()`
+- dados órfãos reais: `TopicoService.ts` e `RegistroService.ts` ainda em memória, com `materiaId` de exemplo que não aponta para nenhum documento real do Firestore
+- correção do erro `Unsupported field value: undefined` (campo opcional `corDestaque` enviado como `undefined`), resolvida com `initializeFirestore(app, { ignoreUndefinedProperties: true })` em `firebase.ts`, em vez de filtrar campos manualmente em cada service
+- atividade: repetir a mesma migração para `Topico` e `Registro` (types, service e telas), completando a mudança para todas as coleções do projeto
+
+Material da aula:
+
+- [aulas/12_firebase.md](aulas/12_firebase.md)

@@ -1,6 +1,6 @@
 export type Topico = {
   id: number;
   nome: string;
-  materiaId: number;
+  materiaId: string;
   concluido: boolean;
 };

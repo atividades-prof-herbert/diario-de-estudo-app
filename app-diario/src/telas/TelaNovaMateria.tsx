@@ -11,16 +11,17 @@ export default function TelaNovaMateria() {
   const [nome, setNome] = useState('');
   const [descricao, setDescricao] = useState('');
   const [corDestaque, setCorDestaque] = useState('');
-  const [editandoId, setEditandoId] = useState<number | null>(null);
+  const [editandoId, setEditandoId] = useState<string | null>(null);
 
   const [materias, setMaterias] = useState<Materia[]>([]);
 
   useEffect(() => {
-    setMaterias(listarMaterias());
+    recarregar();
   }, []);
 
-  function recarregar() {
-    setMaterias(listarMaterias());
+  async function recarregar() {
+    const materiasCarregadas = await listarMaterias();
+    setMaterias(materiasCarregadas);
   }
 
   function limparFormulario() {
@@ -30,16 +31,16 @@ export default function TelaNovaMateria() {
     setEditandoId(null);
   }
 
-  function salvar() {
+  async function salvar() {
     if (!nome.trim()) {
       mostrarAlerta('Campo obrigatório', 'Informe o nome da matéria.');
       return;
     }
 
     if (editandoId !== null) {
-      atualizarMateria(editandoId, { nome, descricao, corDestaque: corDestaque || undefined });
+      await atualizarMateria(editandoId, { nome, descricao, corDestaque: corDestaque || undefined });
     } else {
-      adicionarMateria({ nome, descricao, corDestaque: corDestaque || undefined });
+      await adicionarMateria({ nome, descricao, corDestaque: corDestaque || undefined });
     }
 
     limparFormulario();
@@ -53,12 +54,12 @@ export default function TelaNovaMateria() {
     setEditandoId(materia.id);
   }
 
-  function excluir(id: number, nomeDaMateria: string) {
+  function excluir(id: string, nomeDaMateria: string) {
     confirmarAlerta(
       'Excluir matéria',
       `Deseja excluir "${nomeDaMateria}"?`,
-      () => {
-        removerMateria(id);
+      async () => {
+        await removerMateria(id);
         recarregar();
       }
     );

@@ -1,5 +1,5 @@
 export type Materia = {
-  id: number;
+  id: string;
   nome: string;
   descricao: string;
   corDestaque?: string;

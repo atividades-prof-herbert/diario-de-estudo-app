@@ -1,13 +1,25 @@
+import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text } from 'react-native';
 
 import Cabecalho from '../componentes/Cabecalho';
 import CartaoRegistro from '../componentes/CartaoRegistro';
-import { buscarMateriaPorId } from '../services/MateriaService';
+import { listarMaterias } from '../services/MateriaService';
 import { listarRegistros } from '../services/RegistroService';
 import { buscarTopicoPorId } from '../services/TopicoService';
+import { Materia } from '../types/Materia';
 
 export default function TelaRegistro() {
   const registros = listarRegistros();
+  const [materias, setMaterias] = useState<Materia[]>([]);
+
+  useEffect(() => {
+    async function carregarMaterias() {
+      const materiasCarregadas = await listarMaterias();
+      setMaterias(materiasCarregadas);
+    }
+
+    carregarMaterias();
+  }, []);
 
   return (
     <ScrollView contentContainerStyle={estilos.container}>
@@ -21,7 +33,7 @@ export default function TelaRegistro() {
         registros.map((item) => (
           <CartaoRegistro
             key={item.id}
-            materia={buscarMateriaPorId(item.materiaId)?.nome ?? 'Desconhecida'}
+            materia={materias.find((m) => m.id === item.materiaId)?.nome ?? 'Desconhecida'}
             topico={item.topicoId ? buscarTopicoPorId(item.topicoId)?.nome : undefined}
             descricao={item.descricao}
             data={item.data}

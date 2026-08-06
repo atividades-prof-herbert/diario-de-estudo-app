@@ -1,37 +1,40 @@
+import {
+  collection,
+  doc,
+  addDoc,
+  getDoc,
+  getDocs,
+  updateDoc,
+  deleteDoc,
+} from 'firebase/firestore';
+import { db } from './firebase';
 import { Materia } from '../types/Materia';
 
-const db: Materia[] = [
-  { id: 1, nome: 'Matemática', descricao: 'Álgebra linear e cálculo diferencial' },
-  { id: 2, nome: 'Português', descricao: 'Gramática, interpretação de texto e redação', corDestaque: '#E05C5C' },
-  { id: 3, nome: 'Programação', descricao: 'React Native, TypeScript e lógica de programação', corDestaque: '#2ECC71' },
-];
+const COLECAO = 'materias';
 
-let proximoId = 4;
-
-export function listarMaterias(): Materia[] {
-  return [...db];
+export async function listarMaterias(): Promise<Materia[]> {
+  const snapshot = await getDocs(collection(db, COLECAO));
+  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Materia));
 }
 
-export function buscarMateriaPorId(id: number): Materia | undefined {
-  return db.find((m) => m.id === id);
+export async function buscarMateriaPorId(id: string): Promise<Materia | undefined> {
+  const ref = doc(db, COLECAO, id);
+  const snapshot = await getDoc(ref);
+  if (!snapshot.exists()) return undefined;
+  return { id: snapshot.id, ...snapshot.data() } as Materia;
 }
 
-export function adicionarMateria(dados: Omit<Materia, 'id'>): Materia {
-  const nova: Materia = { id: proximoId++, ...dados };
-  db.push(nova);
-  return nova;
+export async function adicionarMateria(dados: Omit<Materia, 'id'>): Promise<Materia> {
+  const ref = await addDoc(collection(db, COLECAO), dados);
+  return { id: ref.id, ...dados };
 }
 
-export function atualizarMateria(id: number, dados: Partial<Omit<Materia, 'id'>>): Materia | undefined {
-  const index = db.findIndex((m) => m.id === id);
-  if (index === -1) return undefined;
-  db[index] = { ...db[index], ...dados };
-  return db[index];
+export async function atualizarMateria(id: string, dados: Partial<Omit<Materia, 'id'>>): Promise<void> {
+  const ref = doc(db, COLECAO, id);
+  await updateDoc(ref, dados);
 }
 
-export function removerMateria(id: number): boolean {
-  const index = db.findIndex((m) => m.id === id);
-  if (index === -1) return false;
-  db.splice(index, 1);
-  return true;
+export async function removerMateria(id: string): Promise<void> {
+  const ref = doc(db, COLECAO, id);
+  await deleteDoc(ref);
 }

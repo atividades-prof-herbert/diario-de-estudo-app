@@ -3,7 +3,7 @@ import { Picker } from '@react-native-picker/picker';
 
 import Cabecalho from '../componentes/Cabecalho';
 import CartaoTopico from '../componentes/CartaoTopico';
-import { buscarMateriaPorId, listarMaterias } from '../services/MateriaService';
+import { listarMaterias } from '../services/MateriaService';
 import { listarTopicos, listarTopicosPorMateria } from '../services/TopicoService';
 import { useEffect, useState } from 'react';
 import { Materia } from '../types/Materia';
@@ -13,33 +13,36 @@ export default function TelaTopicos() {
 
     const [topicos, setTopicos] = useState<Topico[]>([]);
     const [materias, setMaterias] = useState<Materia[]>([]);
-    const [materiaId, setMateriaId] = useState(0);
+    const [materiaId, setMateriaId] = useState('');
 
     /**
-     * Este useEffect é executado apenas uma vez, quando a tela é montada (não tem dependências). 
-     * Ele é responsável por carregar a lista de matérias do "banco de dados" e armazená-la no estado. 
-     * Assim, quando o usuário abrir a tela, ele já terá as matérias disponíveis 
+     * Este useEffect é executado apenas uma vez, quando a tela é montada (não tem dependências).
+     * Ele é responsável por carregar a lista de matérias do Firestore e armazená-la no estado.
+     * Assim, quando o usuário abrir a tela, ele já terá as matérias disponíveis
      * para filtrar os tópicos.
-     * 
+     *
      */
     useEffect(() => {
-      setMaterias(listarMaterias());
+      async function carregarMaterias() {
+        const materiasCarregadas = await listarMaterias();
+        setMaterias(materiasCarregadas);
+      }
+
+      carregarMaterias();
     }, []);
 
 
-    /**Este useEffect é executado sempre que o valor de `materiaId` mudar. 
+    /**Este useEffect é executado sempre que o valor de `materiaId` mudar.
      * Ele é responsável por carregar a lista de tópicos com base na matéria selecionada.
-     * 
-     * o const id = Number(materiaId); 
-     * é necessário porque o valor selecionado no Picker é do tipo string.
-     * Assim, precisamos convertê-lo para número para compará-lo corretamente com os IDs das matérias.
+     *
+     * O materiaId já vem como string do Picker, que é o mesmo tipo do ID
+     * gerado pelo Firestore, então não é mais necessário convertê-lo para número.
      */
     useEffect(() => {
-      const id = Number(materiaId);
-      if (id === 0) {
+      if (materiaId === '') {
         setTopicos(listarTopicos());
       } else {
-        setTopicos(listarTopicosPorMateria(id));
+        setTopicos(listarTopicosPorMateria(materiaId));
       }
     }, [materiaId]);
 
@@ -49,7 +52,7 @@ export default function TelaTopicos() {
 
       <View style={estilos.picker}>
         <Picker selectedValue={materiaId} onValueChange={setMateriaId}>
-          <Picker.Item label="Todas as matérias" value={0} />
+          <Picker.Item label="Todas as matérias" value="" />
           {materias.map((m) => (
             <Picker.Item key={m.id} label={m.nome} value={m.id} />
           ))}
@@ -65,7 +68,7 @@ export default function TelaTopicos() {
           <CartaoTopico
             key={topico.id}
             nome={topico.nome}
-            materiaVinculada={buscarMateriaPorId(topico.materiaId)?.nome ?? 'Desconhecida'}
+            materiaVinculada={materias.find((m) => m.id === topico.materiaId)?.nome ?? 'Desconhecida'}
             concluido={topico.concluido}
           />
         ))

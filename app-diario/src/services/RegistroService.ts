@@ -1,10 +1,13 @@
 import { Registro } from '../types/Registro';
 
+// materiaId aqui é texto porque agora referencia o ID de um documento no Firestore
+// (coleção "materias"). Os valores abaixo são de exemplo e não apontam para
+// nenhum documento real até que registros também seja migrado para o Firestore.
 const db: Registro[] = [
-  { id: 1, materiaId: 1, topicoId: 3, descricao: 'Regra da cadeia e produto', data: '21/04/2025' },
-  { id: 2, materiaId: 3, topicoId: 6, descricao: 'Componentes e props', data: '22/04/2025' },
-  { id: 3, materiaId: 2, topicoId: 5, data: '23/04/2025' },
-  { id: 4, materiaId: 3, topicoId: 8, descricao: 'Tipos, interfaces e generics', data: '24/04/2025' },
+  { id: 1, materiaId: '1', topicoId: 3, descricao: 'Regra da cadeia e produto', data: '21/04/2025' },
+  { id: 2, materiaId: '3', topicoId: 6, descricao: 'Componentes e props', data: '22/04/2025' },
+  { id: 3, materiaId: '2', topicoId: 5, data: '23/04/2025' },
+  { id: 4, materiaId: '3', topicoId: 8, descricao: 'Tipos, interfaces e generics', data: '24/04/2025' },
 ];
 
 let proximoId = 5;

@@ -1,6 +1,6 @@
 export type Registro = {
   id: number;
-  materiaId: number;
+  materiaId: string;
   topicoId?: number;
   descricao?: string;
   data: string;

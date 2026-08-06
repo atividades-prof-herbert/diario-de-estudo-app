@@ -12,7 +12,12 @@ export default function TelaInicio() {
 
   useFocusEffect(
     useCallback(() => {
-      setMaterias(listarMaterias());
+      async function carregarMaterias() {
+        const materiasCarregadas = await listarMaterias();
+        setMaterias(materiasCarregadas);
+      }
+
+      carregarMaterias();
     }, [])
   );
   return (

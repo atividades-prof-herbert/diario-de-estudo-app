@@ -1,14 +1,17 @@
 import { Topico } from '../types/Topico';
 
+// materiaId aqui é texto porque agora referencia o ID de um documento no Firestore
+// (coleção "materias"). Os valores abaixo são de exemplo e não apontam para
+// nenhum documento real até que topicos também seja migrado para o Firestore.
 const db: Topico[] = [
-  { id: 1, nome: 'Funções de 1º grau', materiaId: 1, concluido: true },
-  { id: 2, nome: 'Sistemas lineares', materiaId: 1, concluido: false },
-  { id: 3, nome: 'Derivadas', materiaId: 1, concluido: true },
-  { id: 4, nome: 'Análise sintática', materiaId: 2, concluido: true },
-  { id: 5, nome: 'Concordância verbal', materiaId: 2, concluido: false },
-  { id: 6, nome: 'React Native', materiaId: 3, concluido: true },
-  { id: 7, nome: 'Hooks no React', materiaId: 3, concluido: false },
-  { id: 8, nome: 'TypeScript', materiaId: 3, concluido: true },
+  { id: 1, nome: 'Funções de 1º grau', materiaId: '1', concluido: true },
+  { id: 2, nome: 'Sistemas lineares', materiaId: '1', concluido: false },
+  { id: 3, nome: 'Derivadas', materiaId: '1', concluido: true },
+  { id: 4, nome: 'Análise sintática', materiaId: '2', concluido: true },
+  { id: 5, nome: 'Concordância verbal', materiaId: '2', concluido: false },
+  { id: 6, nome: 'React Native', materiaId: '3', concluido: true },
+  { id: 7, nome: 'Hooks no React', materiaId: '3', concluido: false },
+  { id: 8, nome: 'TypeScript', materiaId: '3', concluido: true },
 ];
 
 let proximoId = 9;
@@ -22,7 +25,7 @@ export function buscarTopicoPorId(id: number): Topico | undefined {
   return db.find((t) => t.id === id);
 }
 
-export function listarTopicosPorMateria(materiaId: number): Topico[] {
+export function listarTopicosPorMateria(materiaId: string): Topico[] {
   return db.filter((t) => t.materiaId === materiaId);
 }
 

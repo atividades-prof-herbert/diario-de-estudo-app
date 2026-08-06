@@ -10,12 +10,17 @@ import { Materia } from '../types/Materia';
 
 export default function TelaNovoTopico() {
   const [nome, setNome] = useState('');
-  const [materiaId, setMateriaId] = useState(0);
+  const [materiaId, setMateriaId] = useState('');
   const [concluido, setConcluido] = useState(false);
   const [materias, setMaterias] = useState<Materia[]>([]);
 
   useEffect(() => {
-    setMaterias(listarMaterias());
+    async function carregarMaterias() {
+      const materiasCarregadas = await listarMaterias();
+      setMaterias(materiasCarregadas);
+    }
+
+    carregarMaterias();
   }, []);
 
   function salvar() {
@@ -30,7 +35,7 @@ export default function TelaNovoTopico() {
     adicionarTopico({ nome, materiaId, concluido });
     mostrarAlerta('Tópico salvo!', 'Nome: ' + nome);
     setNome('');
-    setMateriaId(0);
+    setMateriaId('');
     setConcluido(false);
   }
 
@@ -49,7 +54,7 @@ export default function TelaNovoTopico() {
       <Text style={estilos.label}>Matéria *</Text>
       <View style={estilos.picker}>
         <Picker selectedValue={materiaId} onValueChange={setMateriaId}>
-          <Picker.Item label="Selecione uma matéria..." value={0} />
+          <Picker.Item label="Selecione uma matéria..." value="" />
           {materias.map((m) => (
             <Picker.Item key={m.id} label={m.nome} value={m.id} />
           ))}

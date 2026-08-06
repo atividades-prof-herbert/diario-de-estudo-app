@@ -6,18 +6,26 @@ import Cabecalho from '../componentes/Cabecalho';
 import CartaoTopico from '../componentes/CartaoTopico';
 import { buscarMateriaPorId } from '../services/MateriaService';
 import { listarTopicosPorMateria } from '../services/TopicoService';
+import { Materia } from '../types/Materia';
 import { Topico } from '../types/Topico';
 
 export default function TelaTopicosMateria() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const [materia, setMateria] = useState<Materia | undefined>(undefined);
   const [topicos, setTopicos] = useState<Topico[]>([]);
 
-  const materia = buscarMateriaPorId(Number(id));
-
   useEffect(() => {
-    if (materia) {
-      setTopicos(listarTopicosPorMateria(materia.id));
+    if (!id) return;
+
+    async function carregarMateria() {
+      const materiaEncontrada = await buscarMateriaPorId(id);
+      setMateria(materiaEncontrada);
+      if (materiaEncontrada) {
+        setTopicos(listarTopicosPorMateria(materiaEncontrada.id));
+      }
     }
+
+    carregarMateria();
   }, [id]);
 
   return (

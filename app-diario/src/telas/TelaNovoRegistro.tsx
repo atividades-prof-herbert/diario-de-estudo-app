@@ -11,7 +11,7 @@ import { Materia } from '../types/Materia';
 import { Topico } from '../types/Topico';
 
 export default function TelaNovoRegistro() {
-  const [materiaId, setMateriaId] = useState(0);
+  const [materiaId, setMateriaId] = useState('');
   const [topicoId, setTopicoId] = useState(0);
   const [descricao, setDescricao] = useState('');
   const [data, setData] = useState('');
@@ -20,13 +20,17 @@ export default function TelaNovoRegistro() {
   const [topicos, setTopicos] = useState<Topico[]>([]);
 
   useEffect(() => {
-    setMaterias(listarMaterias());
+    async function carregarMaterias() {
+      const materiasCarregadas = await listarMaterias();
+      setMaterias(materiasCarregadas);
+    }
+
+    carregarMaterias();
   }, []);
 
   useEffect(() => {
-    const id = Number(materiaId);
-    if (id) {
-      setTopicos(listarTopicosPorMateria(id));
+    if (materiaId) {
+      setTopicos(listarTopicosPorMateria(materiaId));
     } else {
       setTopicos([]);
     }
@@ -34,15 +38,14 @@ export default function TelaNovoRegistro() {
   }, [materiaId]);
 
   function salvar() {
-    const idMateria = Number(materiaId);
     const idTopico = Number(topicoId);
-    if (!idMateria) {
+    if (!materiaId) {
       mostrarAlerta('Campo obrigatório', 'Selecione a matéria.');
       return;
     }
-    adicionarRegistro({ materiaId: idMateria, topicoId: idTopico || undefined, descricao, data });
+    adicionarRegistro({ materiaId, topicoId: idTopico || undefined, descricao, data });
     mostrarAlerta('Registro salvo!', 'Registro adicionado com sucesso.');
-    setMateriaId(0);
+    setMateriaId('');
     setTopicoId(0);
     setDescricao('');
     setData('');
@@ -55,7 +58,7 @@ export default function TelaNovoRegistro() {
       <Text style={estilos.label}>Matéria</Text>
       <View style={estilos.picker}>
         <Picker selectedValue={materiaId} onValueChange={setMateriaId}>
-          <Picker.Item label="Selecione uma matéria..." value={0} />
+          <Picker.Item label="Selecione uma matéria..." value="" />
           {materias.map((m) => (
             <Picker.Item key={m.id} label={m.nome} value={m.id} />
           ))}
@@ -64,8 +67,8 @@ export default function TelaNovoRegistro() {
 
       <Text style={estilos.label}>Tópico</Text>
       <View style={estilos.picker}>
-        <Picker selectedValue={topicoId} onValueChange={setTopicoId} enabled={Number(materiaId) !== 0}>
-          <Picker.Item label={Number(materiaId) ? 'Selecione um tópico...' : 'Selecione a matéria primeiro'} value={0} />
+        <Picker selectedValue={topicoId} onValueChange={setTopicoId} enabled={materiaId !== ''}>
+          <Picker.Item label={materiaId ? 'Selecione um tópico...' : 'Selecione a matéria primeiro'} value={0} />
           {topicos.map((t) => (
             <Picker.Item key={t.id} label={t.nome} value={t.id} />
           ))}
