@@ -183,3 +183,20 @@ Nesta etapa foram trabalhados:
 Material da aula:
 
 - [aulas/9_hooks.md](aulas/9_hooks.md)
+
+
+### Aula 10 - Hooks (parte 4): rota com parâmetro opcional e `useFocusEffect`
+A branch `aula-10-hooks` implementa o exercício da aula 9 (botão "Cancelar edição") e resolve o problema de usar a mesma tela para criar e editar um registro de estudo.
+
+Nesta etapa foram trabalhados:
+
+- botão "Cancelar edição" com renderização condicional (`editandoId !== null &&`)
+- parâmetro opcional de rota via query string (`/registrar-estudo?id=3`) em vez de segmento dinâmico obrigatório (`[id].tsx`)
+- leitura do parâmetro opcional com `useLocalSearchParams<{ id?: string }>()`
+- decisão entre criar e atualizar com base na presença do `id`
+- `useFocusEffect` + `useCallback` para recarregar a lista sempre que a tela ganha foco, resolvendo a limitação do `useEffect` com `[]` (que não roda de novo ao voltar de outra tela)
+- atividade avaliativa: edição de registros de estudo, com renomeação de `TelaNovoRegistro` para `TelaRegistrarEstudo`
+
+Material da aula:
+
+- [aulas/10_hooks.md](aulas/10_hooks.md)
