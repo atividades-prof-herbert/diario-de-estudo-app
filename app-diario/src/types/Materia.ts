@@ -3,4 +3,5 @@ export type Materia = {
   nome: string;
   descricao: string;
   corDestaque?: string;
+  usuarioId: string;
 };

@@ -1,10 +1,12 @@
+import { router } from 'expo-router';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 
 import Cabecalho from '../componentes/Cabecalho';
 import CartaoTopico from '../componentes/CartaoTopico';
-import { listarMaterias } from '../services/MateriaService';
-import { listarTopicos, listarTopicosPorMateria } from '../services/TopicoService';
+import { listarMateriasPorUsuario } from '../services/MateriaService';
+import { getUsuarioLogado } from '../services/SessaoService';
+import { listarTopicosPorMateria, listarTopicosPorMaterias } from '../services/TopicoService';
 import { useEffect, useState } from 'react';
 import { Materia } from '../types/Materia';
 import { Topico } from '../types/Topico';
@@ -17,14 +19,20 @@ export default function TelaTopicos() {
 
     /**
      * Este useEffect é executado apenas uma vez, quando a tela é montada (não tem dependências).
-     * Ele é responsável por carregar a lista de matérias do Firestore e armazená-la no estado.
-     * Assim, quando o usuário abrir a tela, ele já terá as matérias disponíveis
-     * para filtrar os tópicos.
+     * Ele é responsável por carregar do Firestore só as matérias do usuário logado e
+     * armazená-las no estado. Assim, quando o usuário abrir a tela, ele já terá as
+     * matérias disponíveis para filtrar os tópicos.
      *
      */
     useEffect(() => {
+      const usuarioLogado = getUsuarioLogado();
+      if (!usuarioLogado) {
+        router.replace('/');
+        return;
+      }
+
       async function carregarMaterias() {
-        const materiasCarregadas = await listarMaterias();
+        const materiasCarregadas = await listarMateriasPorUsuario(usuarioLogado!.id);
         setMaterias(materiasCarregadas);
       }
 
@@ -32,19 +40,28 @@ export default function TelaTopicos() {
     }, []);
 
 
-    /**Este useEffect é executado sempre que o valor de `materiaId` mudar.
+    /**Este useEffect é executado sempre que o valor de `materiaId` mudar (ou a lista de
+     * matérias do usuário terminar de carregar).
      * Ele é responsável por carregar a lista de tópicos com base na matéria selecionada.
+     *
+     * Quando nenhuma matéria está selecionada ("Todas as matérias"), não existe um
+     * `where('usuarioId', ...)` para topicos — só materias tem esse campo. Por isso o
+     * "join" é feito em duas consultas: pegamos os ids das matérias do usuário (já
+     * carregadas acima) e buscamos os tópicos cujo materiaId está nessa lista.
      *
      * O materiaId já vem como string do Picker, que é o mesmo tipo do ID
      * gerado pelo Firestore, então não é mais necessário convertê-lo para número.
      */
     useEffect(() => {
-      if (materiaId === '') {
-        setTopicos(listarTopicos());
-      } else {
-        setTopicos(listarTopicosPorMateria(materiaId));
+      async function carregarTopicos() {
+        const topicosCarregados = materiaId === ''
+          ? await listarTopicosPorMaterias(materias.map((m) => m.id))
+          : await listarTopicosPorMateria(materiaId);
+        setTopicos(topicosCarregados);
       }
-    }, [materiaId]);
+
+      carregarTopicos();
+    }, [materiaId, materias]);
 
   return (
     <ScrollView contentContainerStyle={estilos.container}>

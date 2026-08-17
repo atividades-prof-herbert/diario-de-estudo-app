@@ -3,21 +3,22 @@ import { useState } from 'react';
 import { router } from 'expo-router';
 
 import Cabecalho from '../componentes/Cabecalho';
+import { cadastrarUsuario } from '../services/UsuarioService';
 import { mostrarAlerta } from '../utils/alerta';
 
 export default function TelaCadastro() {
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
+  const [dataNascimento, setDataNascimento] = useState('');
   const [senha, setSenha] = useState('');
 
-  function aoCriarConta() {
-    if (!nome.trim() || !email.trim() || !senha.trim()) {
+  async function aoCriarConta() {
+    if (!nome.trim() || !email.trim() || !dataNascimento.trim() || !senha.trim()) {
       mostrarAlerta('Atenção', 'Preencha todos os campos.');
       return;
     }
-    // outra forma: usar template string com ${}
-    // mostrarAlerta('Conta criada!', `Nome: ${nome}\nEmail: ${email}\nSenha: ${senha}`);
-    mostrarAlerta('Conta criada!', 'Nome: ' + nome + '\nEmail: ' + email + '\nSenha: ' + senha);
+    await cadastrarUsuario({ nome, email, dataNascimento, senha });
+    mostrarAlerta('Conta criada!', 'Agora você já pode entrar com seu email e senha.');
     router.replace('/');
   }
 
@@ -41,6 +42,14 @@ export default function TelaCadastro() {
         onChangeText={setEmail}
         keyboardType="email-address"
         autoCapitalize="none"
+      />
+
+      <Text style={estilos.rotulo}>Data de nascimento</Text>
+      <TextInput
+        style={estilos.entrada}
+        placeholder="Ex.: 24/04/2000"
+        value={dataNascimento}
+        onChangeText={setDataNascimento}
       />
 
       <Text style={estilos.rotulo}>Senha</Text>

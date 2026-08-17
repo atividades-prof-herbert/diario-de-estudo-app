@@ -233,12 +233,18 @@ Nesta etapa foram trabalhados:
 - a pasta `services` como fronteira entre a interface e a origem dos dados, permitindo trocar o array em memória pelo Firestore sem alterar as telas
 - `types/Materia.ts` passando a representar também o formato de um documento da coleção `materias`, com `id` mudando de `number` para `string` (identificadores gerados pelo Firestore)
 - refatoração do `MateriaService.ts` com `collection`, `doc`, `addDoc`, `getDoc`, `getDocs`, `updateDoc` e `deleteDoc`, e funções passando a retornar `Promise`
-- efeito cascata da migração: chamadas síncronas viram assíncronas (`useEffect` com função `async` interna), e o `id` numérico virando texto exige ajustes em `Picker`s (sentinela `''` no lugar de `0`) e nos tipos `Topico`/`Registro` (`materiaId: string`)
-- caso particular de `TelaTopicos.tsx` e `TelaRegistro.tsx`: chamada síncrona dentro de `.map()` substituída por carregar a lista uma vez em estado e usar `.find()`
-- dados órfãos reais: `TopicoService.ts` e `RegistroService.ts` ainda em memória, com `materiaId` de exemplo que não aponta para nenhum documento real do Firestore
-- correção do erro `Unsupported field value: undefined` (campo opcional `corDestaque` enviado como `undefined`), resolvida com `initializeFirestore(app, { ignoreUndefinedProperties: true })` em `firebase.ts`, em vez de filtrar campos manualmente em cada service
-- atividade: repetir a mesma migração para `Topico` e `Registro` (types, service e telas), completando a mudança para todas as coleções do projeto
+
 
 Material da aula:
 
 - [aulas/12_firebase.md](aulas/12_firebase.md)
+
+
+### Aula 13 - Usuários e login manual
+A branch `aula-13-usuario` introduz o conceito de usuário no diário de estudos, cada matéria passa a pertencer a um `usuarioId`, e o login é implementado na mão (sem `Firebase Auth`) para deixar visível o problema que ele resolve mais adiante.
+
+
+Material da aula:
+
+- [aulas/13_usuario.md](aulas/13_usuario.md)
+- [aulas/13_usuario_atividade.md](aulas/13_usuario_atividade.md)

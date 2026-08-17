@@ -3,8 +3,10 @@ import { ScrollView, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View
 import { mostrarAlerta } from '../utils/alerta';
 import { useEffect, useState } from 'react';
 
+import { router } from 'expo-router';
 import Cabecalho from '../componentes/Cabecalho';
-import { listarMaterias } from '../services/MateriaService';
+import { listarMateriasPorUsuario } from '../services/MateriaService';
+import { getUsuarioLogado } from '../services/SessaoService';
 import { adicionarTopico } from '../services/TopicoService';
 import { Materia } from '../types/Materia';
 
@@ -15,15 +17,21 @@ export default function TelaNovoTopico() {
   const [materias, setMaterias] = useState<Materia[]>([]);
 
   useEffect(() => {
+    const usuarioLogado = getUsuarioLogado();
+    if (!usuarioLogado) {
+      router.replace('/');
+      return;
+    }
+
     async function carregarMaterias() {
-      const materiasCarregadas = await listarMaterias();
+      const materiasCarregadas = await listarMateriasPorUsuario(usuarioLogado!.id);
       setMaterias(materiasCarregadas);
     }
 
     carregarMaterias();
   }, []);
 
-  function salvar() {
+  async function salvar() {
     if (!nome.trim()) {
       mostrarAlerta('Campo obrigatório', 'Informe o nome do tópico.');
       return;
@@ -32,7 +40,7 @@ export default function TelaNovoTopico() {
       mostrarAlerta('Campo obrigatório', 'Selecione a matéria do tópico.');
       return;
     }
-    adicionarTopico({ nome, materiaId, concluido });
+    await adicionarTopico({ nome, materiaId, concluido });
     mostrarAlerta('Tópico salvo!', 'Nome: ' + nome);
     setNome('');
     setMateriaId('');

@@ -3,20 +3,27 @@ import { useState } from 'react';
 import { router } from 'expo-router';
 
 import Cabecalho from '../componentes/Cabecalho';
+import { buscarUsuarioPorCredenciais } from '../services/UsuarioService';
+import { logar } from '../services/SessaoService';
 import { mostrarAlerta } from '../utils/alerta';
 
 export default function TelaLogin() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
 
-  function aoEntrar() {
+  async function aoEntrar() {
     if (!email.trim() || !senha.trim()) {
       mostrarAlerta('Atenção', 'Preencha email e senha.');
       return;
     }
-    // outra forma: usar template string com ${}
-    //mostrarAlerta('Login recebido', `Email: ${email}\nSenha: ${senha}`);
-    mostrarAlerta('Login recebido', 'Email: ' + email + '\nSenha: ' + senha);
+
+    const usuario = await buscarUsuarioPorCredenciais(email, senha);
+    if (!usuario) {
+      mostrarAlerta('Não foi possível entrar', 'Email ou senha incorretos.');
+      return;
+    }
+
+    logar(usuario);
     router.replace('/inicio');
   }
 

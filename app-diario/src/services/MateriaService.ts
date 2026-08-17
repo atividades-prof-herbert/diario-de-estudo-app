@@ -4,6 +4,8 @@ import {
   addDoc,
   getDoc,
   getDocs,
+  query,
+  where,
   updateDoc,
   deleteDoc,
 } from 'firebase/firestore';
@@ -14,6 +16,12 @@ const COLECAO = 'materias';
 
 export async function listarMaterias(): Promise<Materia[]> {
   const snapshot = await getDocs(collection(db, COLECAO));
+  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Materia));
+}
+
+export async function listarMateriasPorUsuario(usuarioId: string): Promise<Materia[]> {
+  const q = query(collection(db, COLECAO), where('usuarioId', '==', usuarioId));
+  const snapshot = await getDocs(q);
   return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Materia));
 }
 

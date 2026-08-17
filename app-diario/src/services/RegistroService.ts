@@ -1,41 +1,40 @@
+import {
+  collection,
+  doc,
+  addDoc,
+  getDoc,
+  getDocs,
+  updateDoc,
+  deleteDoc,
+} from 'firebase/firestore';
+import { db } from './firebase';
 import { Registro } from '../types/Registro';
 
-// materiaId aqui é texto porque agora referencia o ID de um documento no Firestore
-// (coleção "materias"). Os valores abaixo são de exemplo e não apontam para
-// nenhum documento real até que registros também seja migrado para o Firestore.
-const db: Registro[] = [
-  { id: 1, materiaId: '1', topicoId: 3, descricao: 'Regra da cadeia e produto', data: '21/04/2025' },
-  { id: 2, materiaId: '3', topicoId: 6, descricao: 'Componentes e props', data: '22/04/2025' },
-  { id: 3, materiaId: '2', topicoId: 5, data: '23/04/2025' },
-  { id: 4, materiaId: '3', topicoId: 8, descricao: 'Tipos, interfaces e generics', data: '24/04/2025' },
-];
+const COLECAO = 'registros';
 
-let proximoId = 5;
-
-export function listarRegistros(): Registro[] {
-  return [...db];
+export async function listarRegistros(): Promise<Registro[]> {
+  const snapshot = await getDocs(collection(db, COLECAO));
+  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Registro));
 }
 
-export function buscarRegistroPorId(id: number): Registro | undefined {
-  return db.find((r) => r.id === id);
+export async function buscarRegistroPorId(id: string): Promise<Registro | undefined> {
+  const ref = doc(db, COLECAO, id);
+  const snapshot = await getDoc(ref);
+  if (!snapshot.exists()) return undefined;
+  return { id: snapshot.id, ...snapshot.data() } as Registro;
 }
 
-export function adicionarRegistro(dados: Omit<Registro, 'id'>): Registro {
-  const novo: Registro = { id: proximoId++, ...dados };
-  db.push(novo);
-  return novo;
+export async function adicionarRegistro(dados: Omit<Registro, 'id'>): Promise<Registro> {
+  const ref = await addDoc(collection(db, COLECAO), dados);
+  return { id: ref.id, ...dados };
 }
 
-export function atualizarRegistro(id: number, dados: Partial<Omit<Registro, 'id'>>): Registro | undefined {
-  const index = db.findIndex((r) => r.id === id);
-  if (index === -1) return undefined;
-  db[index] = { ...db[index], ...dados };
-  return db[index];
+export async function atualizarRegistro(id: string, dados: Partial<Omit<Registro, 'id'>>): Promise<void> {
+  const ref = doc(db, COLECAO, id);
+  await updateDoc(ref, dados);
 }
 
-export function removerRegistro(id: number): boolean {
-  const index = db.findIndex((r) => r.id === id);
-  if (index === -1) return false;
-  db.splice(index, 1);
-  return true;
+export async function removerRegistro(id: string): Promise<void> {
+  const ref = doc(db, COLECAO, id);
+  await deleteDoc(ref);
 }

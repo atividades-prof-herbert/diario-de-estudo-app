@@ -4,7 +4,8 @@ import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-nati
 
 import Cabecalho from '../componentes/Cabecalho';
 import CartaoMateria from '../componentes/CartaoMateria';
-import { listarMaterias } from '../services/MateriaService';
+import { listarMateriasPorUsuario } from '../services/MateriaService';
+import { getUsuarioLogado } from '../services/SessaoService';
 import { Materia } from '../types/Materia';
 
 export default function TelaInicio() {
@@ -12,8 +13,14 @@ export default function TelaInicio() {
 
   useFocusEffect(
     useCallback(() => {
+      const usuarioLogado = getUsuarioLogado();
+      if (!usuarioLogado) {
+        router.replace('/');
+        return;
+      }
+
       async function carregarMaterias() {
-        const materiasCarregadas = await listarMaterias();
+        const materiasCarregadas = await listarMateriasPorUsuario(usuarioLogado!.id);
         setMaterias(materiasCarregadas);
       }
 

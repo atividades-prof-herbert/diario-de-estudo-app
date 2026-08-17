@@ -1,50 +1,58 @@
+import {
+  collection,
+  doc,
+  addDoc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+  updateDoc,
+  deleteDoc,
+} from 'firebase/firestore';
+import { db } from './firebase';
 import { Topico } from '../types/Topico';
 
-// materiaId aqui é texto porque agora referencia o ID de um documento no Firestore
-// (coleção "materias"). Os valores abaixo são de exemplo e não apontam para
-// nenhum documento real até que topicos também seja migrado para o Firestore.
-const db: Topico[] = [
-  { id: 1, nome: 'Funções de 1º grau', materiaId: '1', concluido: true },
-  { id: 2, nome: 'Sistemas lineares', materiaId: '1', concluido: false },
-  { id: 3, nome: 'Derivadas', materiaId: '1', concluido: true },
-  { id: 4, nome: 'Análise sintática', materiaId: '2', concluido: true },
-  { id: 5, nome: 'Concordância verbal', materiaId: '2', concluido: false },
-  { id: 6, nome: 'React Native', materiaId: '3', concluido: true },
-  { id: 7, nome: 'Hooks no React', materiaId: '3', concluido: false },
-  { id: 8, nome: 'TypeScript', materiaId: '3', concluido: true },
-];
+const COLECAO = 'topicos';
 
-let proximoId = 9;
-
-export function listarTopicos(): Topico[] {
-  return [...db];
+export async function listarTopicos(): Promise<Topico[]> {
+  const snapshot = await getDocs(collection(db, COLECAO));
+  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Topico));
 }
 
-
-export function buscarTopicoPorId(id: number): Topico | undefined {
-  return db.find((t) => t.id === id);
+export async function buscarTopicoPorId(id: string): Promise<Topico | undefined> {
+  const ref = doc(db, COLECAO, id);
+  const snapshot = await getDoc(ref);
+  if (!snapshot.exists()) return undefined;
+  return { id: snapshot.id, ...snapshot.data() } as Topico;
 }
 
-export function listarTopicosPorMateria(materiaId: string): Topico[] {
-  return db.filter((t) => t.materiaId === materiaId);
+export async function listarTopicosPorMateria(materiaId: string): Promise<Topico[]> {
+  const q = query(collection(db, COLECAO), where('materiaId', '==', materiaId));
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Topico));
 }
 
-export function adicionarTopico(dados: Omit<Topico, 'id'>): Topico {
-  const novo: Topico = { id: proximoId++, ...dados };
-  db.push(novo);
-  return novo;
+// "Join" manual: como o Firestore não filtra por usuário direto em topicos
+// (só materias tem usuarioId), primeiro buscamos as materias do usuário e
+// depois os topicos cujo materiaId está entre os ids dessas materias.
+export async function listarTopicosPorMaterias(materiaIds: string[]): Promise<Topico[]> {
+  if (materiaIds.length === 0) return [];
+  const q = query(collection(db, COLECAO), where('materiaId', 'in', materiaIds));
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Topico));
 }
 
-export function atualizarTopico(id: number, dados: Partial<Omit<Topico, 'id'>>): Topico | undefined {
-  const index = db.findIndex((t) => t.id === id);
-  if (index === -1) return undefined;
-  db[index] = { ...db[index], ...dados };
-  return db[index];
+export async function adicionarTopico(dados: Omit<Topico, 'id'>): Promise<Topico> {
+  const ref = await addDoc(collection(db, COLECAO), dados);
+  return { id: ref.id, ...dados };
 }
 
-export function removerTopico(id: number): boolean {
-  const index = db.findIndex((t) => t.id === id);
-  if (index === -1) return false;
-  db.splice(index, 1);
-  return true;
+export async function atualizarTopico(id: string, dados: Partial<Omit<Topico, 'id'>>): Promise<void> {
+  const ref = doc(db, COLECAO, id);
+  await updateDoc(ref, dados);
+}
+
+export async function removerTopico(id: string): Promise<void> {
+  const ref = doc(db, COLECAO, id);
+  await deleteDoc(ref);
 }

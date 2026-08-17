@@ -12,7 +12,7 @@ import { Topico } from '../types/Topico';
 
 export default function TelaNovoRegistro() {
   const [materiaId, setMateriaId] = useState('');
-  const [topicoId, setTopicoId] = useState(0);
+  const [topicoId, setTopicoId] = useState('');
   const [descricao, setDescricao] = useState('');
   const [data, setData] = useState('');
 
@@ -29,24 +29,28 @@ export default function TelaNovoRegistro() {
   }, []);
 
   useEffect(() => {
-    if (materiaId) {
-      setTopicos(listarTopicosPorMateria(materiaId));
-    } else {
-      setTopicos([]);
+    async function carregarTopicos() {
+      if (materiaId) {
+        const topicosCarregados = await listarTopicosPorMateria(materiaId);
+        setTopicos(topicosCarregados);
+      } else {
+        setTopicos([]);
+      }
+      setTopicoId('');
     }
-    setTopicoId(0);
+
+    carregarTopicos();
   }, [materiaId]);
 
-  function salvar() {
-    const idTopico = Number(topicoId);
+  async function salvar() {
     if (!materiaId) {
       mostrarAlerta('Campo obrigatório', 'Selecione a matéria.');
       return;
     }
-    adicionarRegistro({ materiaId, topicoId: idTopico || undefined, descricao, data });
+    await adicionarRegistro({ materiaId, topicoId: topicoId || undefined, descricao, data });
     mostrarAlerta('Registro salvo!', 'Registro adicionado com sucesso.');
     setMateriaId('');
-    setTopicoId(0);
+    setTopicoId('');
     setDescricao('');
     setData('');
   }
@@ -68,7 +72,7 @@ export default function TelaNovoRegistro() {
       <Text style={estilos.label}>Tópico</Text>
       <View style={estilos.picker}>
         <Picker selectedValue={topicoId} onValueChange={setTopicoId} enabled={materiaId !== ''}>
-          <Picker.Item label={materiaId ? 'Selecione um tópico...' : 'Selecione a matéria primeiro'} value={0} />
+          <Picker.Item label={materiaId ? 'Selecione um tópico...' : 'Selecione a matéria primeiro'} value="" />
           {topicos.map((t) => (
             <Picker.Item key={t.id} label={t.nome} value={t.id} />
           ))}

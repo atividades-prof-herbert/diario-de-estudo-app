@@ -21,7 +21,8 @@ export default function TelaTopicosMateria() {
       const materiaEncontrada = await buscarMateriaPorId(id);
       setMateria(materiaEncontrada);
       if (materiaEncontrada) {
-        setTopicos(listarTopicosPorMateria(materiaEncontrada.id));
+        const topicosCarregados = await listarTopicosPorMateria(materiaEncontrada.id);
+        setTopicos(topicosCarregados);
       }
     }
 

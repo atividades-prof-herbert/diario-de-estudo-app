@@ -1,9 +1,11 @@
+import { router } from 'expo-router';
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
 import { useEffect, useState } from 'react';
 
 import Cabecalho from '../componentes/Cabecalho';
 import CartaoMateria from '../componentes/CartaoMateria';
-import { adicionarMateria, atualizarMateria, listarMaterias, removerMateria } from '../services/MateriaService';
+import { adicionarMateria, atualizarMateria, listarMateriasPorUsuario, removerMateria } from '../services/MateriaService';
+import { getUsuarioLogado } from '../services/SessaoService';
 import { confirmarAlerta, mostrarAlerta } from '../utils/alerta';
 import { Materia } from '../types/Materia';
 
@@ -16,11 +18,17 @@ export default function TelaNovaMateria() {
   const [materias, setMaterias] = useState<Materia[]>([]);
 
   useEffect(() => {
+    if (!getUsuarioLogado()) {
+      router.replace('/');
+      return;
+    }
     recarregar();
   }, []);
 
   async function recarregar() {
-    const materiasCarregadas = await listarMaterias();
+    const usuarioLogado = getUsuarioLogado();
+    if (!usuarioLogado) return;
+    const materiasCarregadas = await listarMateriasPorUsuario(usuarioLogado.id);
     setMaterias(materiasCarregadas);
   }
 
@@ -37,10 +45,17 @@ export default function TelaNovaMateria() {
       return;
     }
 
+    const usuarioLogado = getUsuarioLogado();
+    if (!usuarioLogado) {
+      mostrarAlerta('Sessão encerrada', 'Faça login novamente.');
+      router.replace('/');
+      return;
+    }
+
     if (editandoId !== null) {
       await atualizarMateria(editandoId, { nome, descricao, corDestaque: corDestaque || undefined });
     } else {
-      await adicionarMateria({ nome, descricao, corDestaque: corDestaque || undefined });
+      await adicionarMateria({ nome, descricao, corDestaque: corDestaque || undefined, usuarioId: usuarioLogado.id });
     }
 
     limparFormulario();

@@ -5,20 +5,29 @@ import Cabecalho from '../componentes/Cabecalho';
 import CartaoRegistro from '../componentes/CartaoRegistro';
 import { listarMaterias } from '../services/MateriaService';
 import { listarRegistros } from '../services/RegistroService';
-import { buscarTopicoPorId } from '../services/TopicoService';
+import { listarTopicos } from '../services/TopicoService';
 import { Materia } from '../types/Materia';
+import { Registro } from '../types/Registro';
+import { Topico } from '../types/Topico';
 
 export default function TelaRegistro() {
-  const registros = listarRegistros();
+  const [registros, setRegistros] = useState<Registro[]>([]);
   const [materias, setMaterias] = useState<Materia[]>([]);
+  const [topicos, setTopicos] = useState<Topico[]>([]);
 
   useEffect(() => {
-    async function carregarMaterias() {
-      const materiasCarregadas = await listarMaterias();
+    async function carregarDados() {
+      const [registrosCarregados, materiasCarregadas, topicosCarregados] = await Promise.all([
+        listarRegistros(),
+        listarMaterias(),
+        listarTopicos(),
+      ]);
+      setRegistros(registrosCarregados);
       setMaterias(materiasCarregadas);
+      setTopicos(topicosCarregados);
     }
 
-    carregarMaterias();
+    carregarDados();
   }, []);
 
   return (
@@ -34,7 +43,7 @@ export default function TelaRegistro() {
           <CartaoRegistro
             key={item.id}
             materia={materias.find((m) => m.id === item.materiaId)?.nome ?? 'Desconhecida'}
-            topico={item.topicoId ? buscarTopicoPorId(item.topicoId)?.nome : undefined}
+            topico={item.topicoId ? topicos.find((t) => t.id === item.topicoId)?.nome : undefined}
             descricao={item.descricao}
             data={item.data}
           />
