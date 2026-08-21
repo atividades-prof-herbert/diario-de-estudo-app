@@ -1,11 +1,13 @@
+import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text } from 'react-native';
 
 import Cabecalho from '../componentes/Cabecalho';
 import CartaoRegistro from '../componentes/CartaoRegistro';
-import { listarMaterias } from '../services/MateriaService';
-import { listarRegistros } from '../services/RegistroService';
-import { listarTopicos } from '../services/TopicoService';
+import { listarMateriasPorUsuario } from '../services/MateriaService';
+import { listarRegistrosPorMaterias } from '../services/RegistroService';
+import { getUsuarioLogado } from '../services/SessaoService';
+import { listarTopicosPorMaterias } from '../services/TopicoService';
 import { Materia } from '../types/Materia';
 import { Registro } from '../types/Registro';
 import { Topico } from '../types/Topico';
@@ -16,14 +18,23 @@ export default function TelaRegistro() {
   const [topicos, setTopicos] = useState<Topico[]>([]);
 
   useEffect(() => {
+    const usuarioLogado = getUsuarioLogado();
+    if (!usuarioLogado) {
+      router.replace('/');
+      return;
+    }
+
     async function carregarDados() {
-      const [registrosCarregados, materiasCarregadas, topicosCarregados] = await Promise.all([
-        listarRegistros(),
-        listarMaterias(),
-        listarTopicos(),
+      const materiasCarregadas = await listarMateriasPorUsuario(usuarioLogado!.id);
+      const materiaIds = materiasCarregadas.map((m) => m.id);
+
+      const [registrosCarregados, topicosCarregados] = await Promise.all([
+        listarRegistrosPorMaterias(materiaIds),
+        listarTopicosPorMaterias(materiaIds),
       ]);
-      setRegistros(registrosCarregados);
+
       setMaterias(materiasCarregadas);
+      setRegistros(registrosCarregados);
       setTopicos(topicosCarregados);
     }
 

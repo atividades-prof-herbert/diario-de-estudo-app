@@ -3,5 +3,4 @@ export type Usuario = {
   nome: string;
   email: string;
   dataNascimento: string;
-  senha: string;
 };

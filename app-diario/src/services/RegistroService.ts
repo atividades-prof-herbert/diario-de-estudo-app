@@ -4,6 +4,8 @@ import {
   addDoc,
   getDoc,
   getDocs,
+  query,
+  where,
   updateDoc,
   deleteDoc,
 } from 'firebase/firestore';
@@ -14,6 +16,15 @@ const COLECAO = 'registros';
 
 export async function listarRegistros(): Promise<Registro[]> {
   const snapshot = await getDocs(collection(db, COLECAO));
+  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Registro));
+}
+
+// "Join" manual, mesmo padrão de listarTopicosPorMaterias: registros não tem
+// usuarioId próprio, a posse é descoberta a partir das materias do usuário.
+export async function listarRegistrosPorMaterias(materiaIds: string[]): Promise<Registro[]> {
+  if (materiaIds.length === 0) return [];
+  const q = query(collection(db, COLECAO), where('materiaId', 'in', materiaIds));
+  const snapshot = await getDocs(q);
   return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Registro));
 }
 

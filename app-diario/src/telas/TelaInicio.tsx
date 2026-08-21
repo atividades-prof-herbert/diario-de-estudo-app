@@ -5,11 +5,16 @@ import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-nati
 import Cabecalho from '../componentes/Cabecalho';
 import CartaoMateria from '../componentes/CartaoMateria';
 import { listarMateriasPorUsuario } from '../services/MateriaService';
-import { getUsuarioLogado } from '../services/SessaoService';
+import { deslogar, getUsuarioLogado } from '../services/SessaoService';
 import { Materia } from '../types/Materia';
 
 export default function TelaInicio() {
   const [materias, setMaterias] = useState<Materia[]>([]);
+
+  async function sair() {
+    await deslogar();
+    router.replace('/');
+  }
 
   useFocusEffect(
     useCallback(() => {
@@ -46,6 +51,9 @@ export default function TelaInicio() {
         </TouchableOpacity>
         <TouchableOpacity style={[estilos.botao, estilos.botaoDestaque]} onPress={() => router.push('/novo-topico')}>
           <Text style={estilos.botaoTexto}>+ Novo Tópico</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={estilos.botao} onPress={sair}>
+          <Text style={estilos.botaoTexto}>Sair</Text>
         </TouchableOpacity>
       </View>
 

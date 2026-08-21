@@ -1,9 +1,12 @@
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
 import { router } from 'expo-router';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 import Cabecalho from '../componentes/Cabecalho';
+import { auth } from '../services/firebase';
 import { cadastrarUsuario } from '../services/UsuarioService';
+import { carregarUsuarioLogado } from '../services/SessaoService';
 import { mostrarAlerta } from '../utils/alerta';
 
 export default function TelaCadastro() {
@@ -17,9 +20,18 @@ export default function TelaCadastro() {
       mostrarAlerta('Atenção', 'Preencha todos os campos.');
       return;
     }
-    await cadastrarUsuario({ nome, email, dataNascimento, senha });
-    mostrarAlerta('Conta criada!', 'Agora você já pode entrar com seu email e senha.');
-    router.replace('/');
+
+    try {
+      const credencial = await createUserWithEmailAndPassword(auth, email, senha);
+      await cadastrarUsuario(credencial.user.uid, { nome, email, dataNascimento });
+      // createUserWithEmailAndPassword já loga automaticamente quem acabou de
+      // se cadastrar, então atualizamos a sessão local e vamos direto para o
+      // início, sem pedir para o usuário logar de novo.
+      await carregarUsuarioLogado(credencial.user.uid);
+      router.replace('/inicio');
+    } catch (erro) {
+      mostrarAlerta('Não foi possível criar a conta', 'Verifique o email e tente novamente.');
+    }
   }
 
   return (

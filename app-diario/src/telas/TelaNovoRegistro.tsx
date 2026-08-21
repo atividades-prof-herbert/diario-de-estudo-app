@@ -1,11 +1,13 @@
 import { Picker } from '@react-native-picker/picker';
+import { router } from 'expo-router';
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useEffect, useState } from 'react';
 import { mostrarAlerta } from '../utils/alerta';
 
 import Cabecalho from '../componentes/Cabecalho';
-import { listarMaterias } from '../services/MateriaService';
+import { listarMateriasPorUsuario } from '../services/MateriaService';
 import { adicionarRegistro } from '../services/RegistroService';
+import { getUsuarioLogado } from '../services/SessaoService';
 import { listarTopicosPorMateria } from '../services/TopicoService';
 import { Materia } from '../types/Materia';
 import { Topico } from '../types/Topico';
@@ -20,8 +22,14 @@ export default function TelaNovoRegistro() {
   const [topicos, setTopicos] = useState<Topico[]>([]);
 
   useEffect(() => {
+    const usuarioLogado = getUsuarioLogado();
+    if (!usuarioLogado) {
+      router.replace('/');
+      return;
+    }
+
     async function carregarMaterias() {
-      const materiasCarregadas = await listarMaterias();
+      const materiasCarregadas = await listarMateriasPorUsuario(usuarioLogado!.id);
       setMaterias(materiasCarregadas);
     }
 

@@ -1,10 +1,11 @@
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
 import { router } from 'expo-router';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 import Cabecalho from '../componentes/Cabecalho';
-import { buscarUsuarioPorCredenciais } from '../services/UsuarioService';
-import { logar } from '../services/SessaoService';
+import { auth } from '../services/firebase';
+import { carregarUsuarioLogado } from '../services/SessaoService';
 import { mostrarAlerta } from '../utils/alerta';
 
 export default function TelaLogin() {
@@ -17,14 +18,13 @@ export default function TelaLogin() {
       return;
     }
 
-    const usuario = await buscarUsuarioPorCredenciais(email, senha);
-    if (!usuario) {
+    try {
+      const credencial = await signInWithEmailAndPassword(auth, email, senha);
+      await carregarUsuarioLogado(credencial.user.uid);
+      router.replace('/inicio');
+    } catch (erro) {
       mostrarAlerta('Não foi possível entrar', 'Email ou senha incorretos.');
-      return;
     }
-
-    logar(usuario);
-    router.replace('/inicio');
   }
 
   return (
